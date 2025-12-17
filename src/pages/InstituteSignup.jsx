@@ -1,7 +1,7 @@
 // src/pages/InstituteSignup.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Trash2, Edit2 } from "lucide-react"; // npm install lucide-react [web:28][web:37]
+import { Trash2, Edit2 } from "lucide-react"; // npm install lucide-react
 
 export default function InstituteSignup() {
   const navigate = useNavigate();
@@ -18,13 +18,13 @@ export default function InstituteSignup() {
     email: "",
     licenseNumber: "",
     certification: "",
-    // Step 2 - single address (no add/delete)
+    // Step 2
     address: "",
     zipCode: "",
     city: "",
     state: "",
     websiteLink: "",
-    // Step 3 - single management block (no add/delete)
+    // Step 3
     firstName: "",
     lastName: "",
     designation: "",
@@ -33,7 +33,7 @@ export default function InstituteSignup() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleProfileImageChange = (e) => {
@@ -75,7 +75,6 @@ export default function InstituteSignup() {
         !formData.zipCode ||
         !formData.city ||
         !formData.state
-        // websiteLink is optional
       ) {
         alert("Please fill all required address fields");
         return false;
@@ -99,22 +98,27 @@ export default function InstituteSignup() {
 
   const handleNext = () => {
     if (validateStep()) {
-      setStep(step + 1);
+      setStep((prev) => prev + 1);
     }
   };
 
   const handlePrev = () => {
     if (step > 1) {
-      setStep(step - 1);
+      setStep((prev) => prev - 1);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateStep()) {
-      console.log("Institute signup data:", { role, ...formData, profileImageFile });
+      console.log("Institute signup data:", {
+        role,
+        ...formData,
+        profileImageFile,
+      });
       alert("Institute details saved!");
-      navigate("/");
+      // redirect to /institute
+      navigate("/institute");
     }
   };
 
@@ -132,7 +136,7 @@ export default function InstituteSignup() {
             </h2>
           </div>
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/institute")}
             className="text-gray-400 hover:text-gray-600 text-2xl"
           >
             ✕
