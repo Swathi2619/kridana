@@ -6,6 +6,7 @@ import TrainerSignup from "./pages/TrainerSignup";
 import InstituteSignup from "./pages/InstituteSignup";
 import ShopPage from './components/ShopPage';
 import InstituteDashboard from './components/InstituteDashboard';
+import TrainersDashboard from './components/TrainersDashboard';
 import './index.css';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
       <Route path="/institute-signup" element={<InstituteSignup />} />
       <Route path="/shop" element={<ShopPage />} />
       <Route path="/institute" element={<InstituteDashboard />} />
+      <Route path="/trainers" element={<TrainersDashboard />} />
     </Routes>
   );
 }

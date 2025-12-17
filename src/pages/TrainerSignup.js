@@ -1,7 +1,7 @@
 // src/pages/TrainerSignup.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Trash2, Edit2 } from "lucide-react"; // npm install lucide-react [web:28][web:37]
+import { Trash2, Edit2 } from "lucide-react"; // npm install lucide-react
 
 export default function TrainerSignup() {
   const navigate = useNavigate();
@@ -110,7 +110,8 @@ export default function TrainerSignup() {
     if (!validateStep()) return;
     console.log("Trainer signup data:", { role, ...formData, profileImageFile });
     alert("Trainer details saved!");
-    navigate("/");
+    // redirect to trainers dashboard after successful signup
+    navigate("/trainers");
   };
 
   const progressPercentage = (step / 3) * 100;
@@ -341,7 +342,8 @@ export default function TrainerSignup() {
 
                 <div>
                   <label className="block mb-2 text-gray-900 font-semibold">
-                    Website link <span className="text-gray-500">(optional)</span>
+                    Website link{" "}
+                    <span className="text-gray-500">(optional)</span>
                   </label>
                   <input
                     type="url"
