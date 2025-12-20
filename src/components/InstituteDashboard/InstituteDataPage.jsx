@@ -1,5 +1,6 @@
 // src/components/InstituteDashboard/InstituteDataPage.jsx
 import React, { useState, useMemo, useEffect } from "react";
+import MonthRangePicker from "../MonthRangePicker";
 
 const InstituteDataPage = ({
   students,
@@ -32,6 +33,11 @@ const InstituteDataPage = ({
     [trainers, search]
   );
 
+  const handleRangeChange = (range) => {
+    // { year, startMonthIndex, endMonthIndex }
+    console.log("InstituteDataPage range:", range);
+  };
+
   return (
     <div className="h-full text-white">
       {/* search + icons */}
@@ -54,7 +60,7 @@ const InstituteDataPage = ({
         </div>
       </div>
 
-      {/* title + dropdown + date + add */}
+      {/* title + dropdown + month range + add */}
       <div className="flex items-center justify-between mb-4 relative">
         <div className="relative">
           <button
@@ -93,10 +99,7 @@ const InstituteDataPage = ({
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
-            <span>📅</span>
-            <span>Jan2026–Feb2026</span>
-          </button>
+          <MonthRangePicker onChange={handleRangeChange} />
           <button className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
             <span>➕</span>
             <span>Add</span>
@@ -307,7 +310,9 @@ const InstituteTrainersTable = ({ rows, onDelete }) => {
                 {isEditing ? (
                   <input
                     value={draft.category}
-                    onChange={(e) => handleChange("category", e.target.value)}
+                    onChange={(e) =>
+                      handleChange("category", e.target.value)
+                    }
                     className="border px-2 py-1 rounded text-xs w-full"
                   />
                 ) : (

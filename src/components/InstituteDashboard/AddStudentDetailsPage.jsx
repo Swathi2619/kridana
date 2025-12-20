@@ -13,13 +13,15 @@ const AddStudentDetailsPage = () => {
           type="button"
           className="absolute top-5 right-6 text-2xl text-gray-500 hover:text-gray-700"
         >
-          
+          {/* close icon could go here */}
         </button>
 
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl md:text-3xl font-extrabold">
             Add Student Details
           </h1>
+
+          {/* only + Add button */}
           <button className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
             <span>➕</span>
             <span>Add</span>
@@ -67,9 +69,7 @@ const AddStudentDetailsPage = () => {
                   type="date"
                   className="w-full border border-gray-300 rounded-md px-3 py-2 pr-10 outline-none focus:ring-2 focus:ring-orange-400"
                 />
-                <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500 text-lg">
-                  📅
-                </span>
+                
               </div>
             </div>
           </div>

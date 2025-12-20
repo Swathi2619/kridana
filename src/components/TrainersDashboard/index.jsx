@@ -6,6 +6,7 @@ import FeesDetailsPage from "./FeesDetailsPage";
 import AddStudentDetailsPage from "./AddStudentDetailsPage";
 import PaymentsPage from "./PaymentsPage";
 import { Pagination } from "./shared";
+import MonthRangePicker from "../MonthRangePicker";
 
 const sidebarItems = [
   "Home",
@@ -69,6 +70,11 @@ const TrainersDashboard = () => {
     }
   };
 
+  const handleRangeChange = (range) => {
+    // { year, startMonthIndex, endMonthIndex }
+    console.log("TrainersDashboard range:", range);
+  };
+
   const renderMainContent = () => {
     if (view === "studentsAttendance") return <StudentsAttendancePage />;
     if (view === "feesDetails") return <FeesDetailsPage />;
@@ -97,17 +103,14 @@ const TrainersDashboard = () => {
           </div>
         </div>
 
-        {/* header + date + add */}
+        {/* header + date range + add */}
         <div className="flex items-center justify-between mb-4 relative">
           <h1 className="text-3xl font-extrabold text-orange-400">
             Trainers Data
           </h1>
 
           <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
-              <span>📅</span>
-              <span>Jan2026–Feb2026</span>
-            </button>
+            <MonthRangePicker onChange={handleRangeChange} />
             <button className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
               <span>➕</span>
               <span>Add</span>

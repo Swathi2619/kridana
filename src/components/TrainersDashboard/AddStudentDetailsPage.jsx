@@ -67,9 +67,7 @@ const AddStudentDetailsPage = () => {
                   type="date"
                   className="w-full border border-gray-300 rounded-md px-3 py-2 pr-10 outline-none focus:ring-2 focus:ring-orange-400"
                 />
-                <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500 text-lg">
-                  📅
-                </span>
+              
               </div>
             </div>
           </div>

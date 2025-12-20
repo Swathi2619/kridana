@@ -68,19 +68,11 @@ export const SmallStatCard = ({ label, value }) => (
   </div>
 );
 
+/* UPDATED: only title, no Today / All Classes / Edit */
 export const ListHeader = ({ title }) => (
   <div className="flex items-center justify-between mb-2">
     <h2 className="text-xl font-extrabold text-orange-500">{title}</h2>
-    <div className="flex items-center gap-4 text-sm">
-      <button className="flex items-center gap-1 text-gray-700">
-        <span>📅</span>
-        <span>Today</span>
-      </button>
-      <button className="text-gray-700">All Classes ▾</button>
-      <button className="bg-orange-500 text-white px-4 py-2 rounded-md font-semibold">
-        Edit
-      </button>
-    </div>
+    {/* right side intentionally empty; pages add their own controls */}
   </div>
 );
 

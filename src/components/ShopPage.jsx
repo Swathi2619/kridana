@@ -1,5 +1,5 @@
-// src/components/ShopPage.jsx
 import React, { useEffect, useState } from "react";
+import FullProductPage from "./FullProductPage";
 
 const categories = [
   { id: 1, title: "Upper Wear", image: "/upperwear.jpg" },
@@ -38,10 +38,19 @@ const recommended = [
 ];
 
 const ShopPage = () => {
-  const [view, setView] = useState("home"); // 'home' or 'grid'
+  const [view, setView] = useState("home"); // 'home' | 'grid' | 'full'
 
   if (view === "grid") {
-    return <ProductsGrid onBack={() => setView("home")} />;
+    return (
+      <ProductsGrid
+        onBack={() => setView("home")}
+        onOpenFull={() => setView("full")}
+      />
+    );
+  }
+
+  if (view === "full") {
+    return <FullProductPage onBack={() => setView("home")} />;
   }
 
   return (
@@ -100,10 +109,10 @@ const RecommendedCard = ({ item, onOpenGrid }) => {
 
   // auto-slide every 2 seconds
   useEffect(() => {
-    const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % item.images.length);
-    }, 2000);
-
+    const timer = setInterval(
+      () => setIndex((prev) => (prev + 1) % item.images.length),
+      2000
+    );
     return () => clearInterval(timer);
   }, [item.images.length]);
 
@@ -115,10 +124,11 @@ const RecommendedCard = ({ item, onOpenGrid }) => {
       <div className="px-6 pt-6 pb-4">
         <div className="bg-gray-50 rounded-[32px] overflow-hidden relative h-64">
           <div
-            className="absolute inset-0 flex slide-track"
+            className="absolute inset-0 flex"
             style={{
               width: `${item.images.length * 100}%`,
               transform: `translateX(-${index * slideWidth}%)`,
+              transition: "transform 0.4s ease",
             }}
           >
             {item.images.map((src, i) => (
@@ -181,8 +191,7 @@ const RecommendedCard = ({ item, onOpenGrid }) => {
   );
 };
 
-/* grid page like your screenshot */
-const ProductsGrid = ({ onBack }) => {
+const ProductsGrid = ({ onBack, onOpenFull }) => {
   return (
     <div className="min-h-screen bg-white flex">
       {/* left sidebar */}
@@ -248,17 +257,18 @@ const ProductsGrid = ({ onBack }) => {
           </div>
         </div>
 
-        {/* products grid – placeholder cards */}
+        {/* products grid – clickable cards */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div
+            <button
               key={i}
-              className="border border-orange-200 rounded-3xl overflow-hidden"
+              onClick={onOpenFull}
+              className="text-left border border-orange-200 rounded-3xl overflow-hidden"
             >
               <div className="relative bg-gray-100 h-40">
-                <button className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white text-orange-500 flex items-center justify-center">
+                <span className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white text-orange-500 flex items-center justify-center">
                   ♥
-                </button>
+                </span>
               </div>
               <div className="p-3">
                 <h4 className="font-semibold text-lg mb-1">Product name</h4>
@@ -267,12 +277,12 @@ const ProductsGrid = ({ onBack }) => {
                     <p className="text-xs text-gray-500">Price</p>
                     <p className="font-semibold">₹ 0000</p>
                   </div>
-                  <button className="bg-orange-500 text-white px-4 py-1.5 rounded-full text-sm font-semibold flex items-center gap-1">
+                  <span className="bg-orange-500 text-white px-4 py-1.5 rounded-full text-sm font-semibold flex items-center gap-1">
                     ⊕ Add
-                  </button>
+                  </span>
                 </div>
               </div>
-            </div>
+            </button>
           ))}
         </div>
       </main>

@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { Pagination } from "./shared";
+import MonthRangePicker from "../MonthRangePicker";
 
 const StudentsAttendancePage = () => {
   const [rows, setRows] = useState(
@@ -28,8 +29,15 @@ const StudentsAttendancePage = () => {
       )
     );
 
+  const handleRangeChange = (range) => {
+    // range: { year, startMonthIndex, endMonthIndex }
+    // optional: filter data based on selected range
+    console.log("Selected range in StudentsAttendancePage", range);
+  };
+
   return (
     <div className="h-full bg-[#1b0f06] text-white p-6 rounded-lg">
+      {/* Search */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center bg-[#3b2615] border border-[#6b4a2d] rounded-full px-4 py-2 w-full max-w-md">
           <span className="mr-2 text-lg text-gray-300">🔍</span>
@@ -43,16 +51,16 @@ const StudentsAttendancePage = () => {
         </div>
       </div>
 
+      {/* Title + shared MonthRangePicker */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-3xl font-extrabold text-orange-500">
           Students Attendance
         </h1>
-        <button className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
-          <span>📅</span>
-          <span>Jan2026–Feb2026</span>
-        </button>
+
+        <MonthRangePicker onChange={handleRangeChange} />
       </div>
 
+      {/* Table */}
       <div className="bg-[#f9c199] rounded-t-xl overflow-hidden">
         <div className="grid grid-cols-4 gap-4 px-4 py-3 text-black font-semibold text-lg">
           <div className="flex items-center gap-2">

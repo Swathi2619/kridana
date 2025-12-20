@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { Pagination } from "./shared";
+import MonthRangePicker from "../MonthRangePicker";
 
 const StudentsAttendancePage = () => {
   const [rows, setRows] = useState(
@@ -28,6 +29,10 @@ const StudentsAttendancePage = () => {
       )
     );
 
+  const handleRangeChange = (range) => {
+    console.log("Institute StudentsAttendance range:", range);
+  };
+
   return (
     <div className="h-full bg-[#1b0f06] text-white p-6 rounded-lg">
       <div className="flex items-center justify-between mb-4">
@@ -47,10 +52,7 @@ const StudentsAttendancePage = () => {
         <h1 className="text-3xl font-extrabold text-orange-500">
           Students Attendance
         </h1>
-        <button className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
-          <span>📅</span>
-          <span>Jan2026–Feb2026</span>
-        </button>
+        <MonthRangePicker onChange={handleRangeChange} />
       </div>
 
       <div className="bg-[#f9c199] rounded-t-xl overflow-hidden">
