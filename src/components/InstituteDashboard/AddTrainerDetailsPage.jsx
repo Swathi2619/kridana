@@ -1,63 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 
-const AddTrainerDetailsPage = ({ onAddTrainer }) => {
-  const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    category: "",
-    joinedDate: "",
-    email: "",
-    phone: "",
-    certificates: "",
-  });
-
-  const handleChange = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  };
-
+const AddTrainerDetailsPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Basic validation
-    if (!form.firstName.trim()) {
-      alert("Please enter first name");
-      return;
-    }
-
-    // Build trainer object
-    const newTrainer = {
-      name: `${form.firstName.trim()} ${form.lastName.trim()}`.trim(),
-      category: form.category.trim() || "Cricket",
-      phone: form.phone.trim() || "+91 88888 00000",
-      email: form.email.trim(),
-      joinedDate: form.joinedDate,
-      certificates: form.certificates.trim(),
-    };
-
-    // Call parent callback if provided
-    if (onAddTrainer) {
-      onAddTrainer(newTrainer);
-    }
-
-    alert("Trainer details saved (demo).");
-
-    // Clear form
-    setForm({
-      firstName: "",
-      lastName: "",
-      category: "",
-      joinedDate: "",
-      email: "",
-      phone: "",
-      certificates: "",
-    });
-  };
-
-  // When clicking top-right +Add we simply submit the form as well
-  const handleAddClick = () => {
-    // simulate submit
-    const fakeEvent = { preventDefault: () => {} };
-    handleSubmit(fakeEvent);
+    alert("Trainer details saved (demo only).");
   };
 
   return (
@@ -67,20 +13,14 @@ const AddTrainerDetailsPage = ({ onAddTrainer }) => {
           type="button"
           className="absolute top-5 right-6 text-2xl text-gray-500 hover:text-gray-700"
         >
-          {/* close icon could go here */}
+          
         </button>
 
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl md:text-3xl font-extrabold">
             Add Trainer Details
           </h1>
-
-          {/* + Add triggers same logic as Save */}
-          <button
-            type="button"
-            onClick={handleAddClick}
-            className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold"
-          >
+          <button className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
             <span>➕</span>
             <span>Add</span>
           </button>
@@ -94,8 +34,6 @@ const AddTrainerDetailsPage = ({ onAddTrainer }) => {
               </label>
               <input
                 type="text"
-                value={form.firstName}
-                onChange={(e) => handleChange("firstName", e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>
@@ -105,8 +43,6 @@ const AddTrainerDetailsPage = ({ onAddTrainer }) => {
               </label>
               <input
                 type="text"
-                value={form.lastName}
-                onChange={(e) => handleChange("lastName", e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>
@@ -119,8 +55,6 @@ const AddTrainerDetailsPage = ({ onAddTrainer }) => {
               </label>
               <input
                 type="text"
-                value={form.category}
-                onChange={(e) => handleChange("category", e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>
@@ -131,10 +65,9 @@ const AddTrainerDetailsPage = ({ onAddTrainer }) => {
               <div className="relative">
                 <input
                   type="date"
-                  value={form.joinedDate}
-                  onChange={(e) => handleChange("joinedDate", e.target.value)}
                   className="w-full border border-gray-300 rounded-md px-3 py-2 pr-10 outline-none focus:ring-2 focus:ring-orange-400"
                 />
+            
               </div>
             </div>
           </div>
@@ -146,8 +79,6 @@ const AddTrainerDetailsPage = ({ onAddTrainer }) => {
               </label>
               <input
                 type="email"
-                value={form.email}
-                onChange={(e) => handleChange("email", e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>
@@ -157,8 +88,6 @@ const AddTrainerDetailsPage = ({ onAddTrainer }) => {
               </label>
               <input
                 type="tel"
-                value={form.phone}
-                onChange={(e) => handleChange("phone", e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>
@@ -170,10 +99,6 @@ const AddTrainerDetailsPage = ({ onAddTrainer }) => {
             </label>
             <input
               type="text"
-              value={form.certificates}
-              onChange={(e) =>
-                handleChange("certificates", e.target.value)
-              }
               className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
             />
           </div>
