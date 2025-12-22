@@ -1,9 +1,54 @@
-import React from "react";
+import React, { useState } from "react";
 
-const AddStudentDetailsPage = () => {
+const AddStudentDetailsPage = ({ onAddStudent }) => {
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    category: "",
+    joinedDate: "",
+    email: "",
+    phone: "",
+  });
+
+  const handleChange = (field, value) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Student details saved (demo only).");
+
+    if (!form.firstName.trim()) {
+      alert("Please enter first name");
+      return;
+    }
+
+    const newStudent = {
+      name: `${form.firstName.trim()} ${form.lastName.trim()}`.trim(),
+      category: form.category.trim(),
+      joinedDate: form.joinedDate,
+      email: form.email.trim(),
+      phone: form.phone.trim() || "+91 99999 00000",
+    };
+
+    if (onAddStudent) {
+      onAddStudent(newStudent);
+    }
+
+    alert("Student details saved (demo).");
+
+    setForm({
+      firstName: "",
+      lastName: "",
+      category: "",
+      joinedDate: "",
+      email: "",
+      phone: "",
+    });
+  };
+
+  const handleAddClick = () => {
+    const fakeEvent = { preventDefault: () => {} };
+    handleSubmit(fakeEvent);
   };
 
   return (
@@ -21,8 +66,12 @@ const AddStudentDetailsPage = () => {
             Add Student Details
           </h1>
 
-          {/* only + Add button */}
-          <button className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
+          {/* + Add triggers same logic as Save */}
+          <button
+            type="button"
+            onClick={handleAddClick}
+            className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold"
+          >
             <span>➕</span>
             <span>Add</span>
           </button>
@@ -36,6 +85,8 @@ const AddStudentDetailsPage = () => {
               </label>
               <input
                 type="text"
+                value={form.firstName}
+                onChange={(e) => handleChange("firstName", e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>
@@ -45,6 +96,8 @@ const AddStudentDetailsPage = () => {
               </label>
               <input
                 type="text"
+                value={form.lastName}
+                onChange={(e) => handleChange("lastName", e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>
@@ -57,6 +110,8 @@ const AddStudentDetailsPage = () => {
               </label>
               <input
                 type="text"
+                value={form.category}
+                onChange={(e) => handleChange("category", e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>
@@ -67,9 +122,10 @@ const AddStudentDetailsPage = () => {
               <div className="relative">
                 <input
                   type="date"
+                  value={form.joinedDate}
+                  onChange={(e) => handleChange("joinedDate", e.target.value)}
                   className="w-full border border-gray-300 rounded-md px-3 py-2 pr-10 outline-none focus:ring-2 focus:ring-orange-400"
                 />
-                
               </div>
             </div>
           </div>
@@ -81,6 +137,8 @@ const AddStudentDetailsPage = () => {
               </label>
               <input
                 type="email"
+                value={form.email}
+                onChange={(e) => handleChange("email", e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>
@@ -90,6 +148,8 @@ const AddStudentDetailsPage = () => {
               </label>
               <input
                 type="tel"
+                value={form.phone}
+                onChange={(e) => handleChange("phone", e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>

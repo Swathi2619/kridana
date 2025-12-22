@@ -7,6 +7,8 @@ const InstituteDataPage = ({
   trainers,
   onDeleteStudent,
   onDeleteTrainer,
+  onAddStudent,
+  onAddTrainer,
 }) => {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [activeType, setActiveType] = useState("students");
@@ -34,8 +36,16 @@ const InstituteDataPage = ({
   );
 
   const handleRangeChange = (range) => {
-    // { year, startMonthIndex, endMonthIndex }
     console.log("InstituteDataPage range:", range);
+  };
+
+  // Decide which add callback to trigger based on activeType
+  const handleAddClick = () => {
+    if (activeType === "students" && onAddStudent) {
+      onAddStudent();
+    } else if (activeType === "trainers" && onAddTrainer) {
+      onAddTrainer();
+    }
   };
 
   return (
@@ -100,7 +110,11 @@ const InstituteDataPage = ({
 
         <div className="flex items-center gap-3">
           <MonthRangePicker onChange={handleRangeChange} />
-          <button className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
+          <button
+            type="button"
+            onClick={handleAddClick}
+            className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold"
+          >
             <span>➕</span>
             <span>Add</span>
           </button>
@@ -125,7 +139,7 @@ const InstituteDataPage = ({
 /* -------- shared row actions (delete + edit/save) -------- */
 
 const TableActions = ({ onDelete, onEditToggle, isEditing }) => (
-  <div className="flex items-center gap-3 text-orange-500 text-lg">
+  <div className="flex itemscenter gap-3 text-orange-500 text-lg">
     <button title="Delete" onClick={onDelete}>
       🗑️
     </button>

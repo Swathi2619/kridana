@@ -6,7 +6,7 @@ import InstituteSignup from "./pages/InstituteSignup";
 import ShopPage from "./components/ShopPage";
 import InstituteDashboard from "./components/InstituteDashboard";
 import TrainersDashboard from "./components/TrainersDashboard";
-import ClassTime from "./ClassTime";
+import ClassTime from './components/InstituteDashboard/ClassTime';
 import ViewInstitutes from "./ViewInstitues";
 import ViewTrainers from "./ViewTrainers";
 import AddAddressPage from "./components/AddAddressPage";

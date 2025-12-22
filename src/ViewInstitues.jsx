@@ -2,66 +2,77 @@ import React from "react";
 
 export default function ViewTrainers() {
   return (
-    <div style={styles.page}>
-      {/* NAVBAR */}
-      <header style={styles.navbar}>
-        <div style={styles.leftCircle}></div>
-
-        <nav style={styles.menu}>
-          <a style={styles.link} href="#">Home</a>
-          <a style={styles.link} href="#">Services</a>
-          <a style={styles.link} href="#">About Us</a>
-          <a style={styles.link} href="#">Payment</a>
-          <a style={styles.link} href="#">Shop</a>
-        </nav>
-
-        <div style={styles.rightCircle}></div>
-      </header>
-
+    <div className="w-full min-h-screen bg-white">
       {/* TOP GREY SECTION */}
-      <section style={styles.topGreySection}></section>
+      <section className="w-full h-[620px] bg-[#d9d9d9] mt-12" />
 
       {/* DETAILS SECTION */}
-      <section style={styles.detailsSection}>
-        <div style={styles.titleRow}>
-          <h1 style={styles.title}>Institute Details</h1>
-          <button style={styles.viewBtn}>View Trainers</button>
+      <section className="w-full bg-white py-12 px-6 md:px-16 lg:px-24">
+        <div className="flex justify-between items-center mb-12">
+          <h1 className="text-[48px] font-bold text-[#ff7a00] border-b-4 border-[#ff7a00] pb-2">
+            Institute Details
+          </h1>
+          <button className="bg-[#ff7a00] text-white border-none px-8 py-4 text-[22px] font-semibold rounded-xl cursor-pointer">
+            View Trainers
+          </button>
         </div>
 
         {/* CARDS GRID */}
-        <div style={styles.cardsGrid}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[30px]">
           {[1, 2, 3, 4, 5, 6].map((item) => (
-            <div key={item} style={styles.card}>
-              
+            <div
+              key={item}
+              className="bg-white rounded-[18px] shadow-[0_6px_14px_rgba(0,0,0,0.2)] overflow-hidden border-2 border-[#ddd]"
+            >
               {/* IMAGE */}
-              <div style={styles.cardImage}></div>
+              <div
+                className="h-[220px]"
+                style={{
+                  background:
+                    "repeating-conic-gradient(#eee 0% 25%, #f7f7f7 0% 50%) 50% / 40px 40px",
+                }}
+              />
 
               {/* CONTENT */}
-              <div style={styles.cardContent}>
-                <h2 style={styles.instituteName}>Institute Name</h2>
-                <p style={styles.category}>Category</p>
+              <div className="p-6">
+                <h2 className="text-[26px] font-bold text-center mb-1">
+                  Institute Name
+                </h2>
+                <p className="text-[20px] text-center text-[#555] mb-5">
+                  Category
+                </p>
 
-                <div style={styles.infoRow}>
-                  <span style={styles.icon}>📍</span>
+                <div className="flex items-center gap-[14px] text-[20px] font-semibold mb-[14px]">
+                  <span className="w-[42px] h-[42px] rounded-full bg-[#f1f1f1] flex items-center justify-center text-[20px]">
+                    📍
+                  </span>
                   <span>Location</span>
                 </div>
 
-                <div style={styles.infoRow}>
-                  <span style={styles.icon}>⭐</span>
+                <div className="flex items-center gap-[14px] text-[20px] font-semibold mb-[14px]">
+                  <span className="w-[42px] h-[42px] rounded-full bg-[#f1f1f1] flex items-center justify-center text-[20px]">
+                    ⭐
+                  </span>
                   <span>Rating</span>
                 </div>
 
-                <div style={styles.infoRow}>
-                  <span style={styles.icon}>👤</span>
+                <div className="flex items-center gap-[14px] text-[20px] font-semibold mb-[14px]">
+                  <span className="w-[42px] h-[42px] rounded-full bg-[#f1f1f1] flex items-center justify-center text-[20px]">
+                    👤
+                  </span>
                   <span>+91</span>
                 </div>
 
-                <div style={styles.infoRow}>
-                  <span style={styles.icon}>✉️</span>
+                <div className="flex items-center gap-[14px] text-[20px] font-semibold mb-[14px]">
+                  <span className="w-[42px] h-[42px] rounded-full bg-[#f1f1f1] flex items-center justify-center text-[20px]">
+                    ✉️
+                  </span>
                   <span>abc@gmail.com</span>
                 </div>
 
-                <button style={styles.cardBtn}>Contact Institutes</button>
+                <button className="mt-5 w-full bg-[#ff7a00] text-white border-none py-[14px] text-[22px] font-semibold rounded-xl cursor-pointer">
+                  Contact Institutes
+                </button>
               </div>
             </div>
           ))}
@@ -70,163 +81,3 @@ export default function ViewTrainers() {
     </div>
   );
 }
-
-/* ---------------- STYLES ---------------- */
-
-const styles = {
-  page: {
-    width: "100%",
-    minHeight: "100vh",
-    background: "#ffffff",
-  },
-
-  /* NAVBAR */
-  navbar: {
-    width: "100%",
-    height: "95px",
-    background: "#ffffff",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-
-  leftCircle: {
-    width: "95px",
-    height: "95px",
-    borderRadius: "50%",
-    background: "#e5e5e5",
-    marginLeft: "20px",
-  },
-
-  rightCircle: {
-    width: "95px",
-    height: "95px",
-    borderRadius: "50%",
-    background: "#e5e5e5",
-    marginRight: "20px",
-  },
-
-  menu: {
-    display: "flex",
-    gap: "55px",
-  },
-
-  link: {
-    textDecoration: "none",
-    fontSize: "32px",
-    fontWeight: "700",
-    color: "#ff7a00",
-  },
-
-  /* TOP GREY */
-  topGreySection: {
-    width: "100%",
-    height: "620px",
-    background: "#d9d9d9",
-    marginTop: "50px",
-  },
-
-  detailsSection: {
-  width: "100%",
-  background: "#ffffff",
-  padding: "50px 0",   
-},
-
-
-  titleRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "50px",
-  },
-
-  title: {
-    fontSize: "48px",
-    fontWeight: "700",
-    color: "#ff7a00",
-    borderBottom: "4px solid #ff7a00",
-    paddingBottom: "10px",
-  },
-
-  viewBtn: {
-    background: "#ff7a00",
-    color: "#ffffff",
-    border: "none",
-    padding: "16px 32px",
-    fontSize: "22px",
-    fontWeight: "600",
-    borderRadius: "12px",
-    cursor: "pointer",
-  },
-
-  /* CARDS */
-  cardsGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",
-    gap: "30px",
-  },
-
-  card: {
-    background: "#ffffff",
-    borderRadius: "18px",
-    boxShadow: "0 6px 14px rgba(0,0,0,0.2)",
-    overflow: "hidden",
-    border: "2px solid #ddd",
-  },
-
-  cardImage: {
-    height: "220px",
-    background: "repeating-conic-gradient(#eee 0% 25%, #f7f7f7 0% 50%) 50% / 40px 40px",
-  },
-
-  cardContent: {
-    padding: "24px",
-  },
-
-  instituteName: {
-    fontSize: "26px",
-    fontWeight: "700",
-    textAlign: "center",
-    marginBottom: "6px",
-  },
-
-  category: {
-    fontSize: "20px",
-    textAlign: "center",
-    color: "#555",
-    marginBottom: "20px",
-  },
-
-  infoRow: {
-    display: "flex",
-    alignItems: "center",
-    gap: "14px",
-    fontSize: "20px",
-    fontWeight: "600",
-    marginBottom: "14px",
-  },
-
-  icon: {
-    width: "42px",
-    height: "42px",
-    borderRadius: "50%",
-    background: "#f1f1f1",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: "20px",
-  },
-
-  cardBtn: {
-    marginTop: "20px",
-    width: "100%",
-    background: "#ff7a00",
-    color: "#ffffff",
-    border: "none",
-    padding: "14px",
-    fontSize: "22px",
-    fontWeight: "600",
-    borderRadius: "12px",
-    cursor: "pointer",
-  },
-};

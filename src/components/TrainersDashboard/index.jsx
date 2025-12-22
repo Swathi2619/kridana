@@ -5,6 +5,7 @@ import StudentsAttendancePage from "./StudentsAttendancePage";
 import FeesDetailsPage from "./FeesDetailsPage";
 import AddStudentDetailsPage from "./AddStudentDetailsPage";
 import PaymentsPage from "./PaymentsPage";
+import ClassTime from "./ClassTime";
 import { Pagination } from "./shared";
 import MonthRangePicker from "../MonthRangePicker";
 
@@ -13,6 +14,7 @@ const sidebarItems = [
   "Students Attendance",
   "Fees Details",
   "Add Student Details",
+  "Class Timings",
   "Inbox",
   "Shop",
   "Edit Profile",
@@ -32,9 +34,9 @@ const TrainersDashboard = () => {
   const [trainers, setTrainers] = useState(
     Array.from({ length: 8 }).map((_, i) => ({
       id: i + 1,
-      name: `Students Name ${i + 1}`,
+      name: `Trainer ${i + 1}`,
       batch: String(i + 1).padStart(2, "0"),
-      phone: "+91",
+      phone: "+91 99999 0000" + (i + 1),
     }))
   );
 
@@ -51,7 +53,9 @@ const TrainersDashboard = () => {
   const handleMenuClick = (item) => {
     setActiveMenu(item);
 
-    if (item === "Students Attendance") {
+    if (item === "Class Timings") {
+      setView("classTimings");
+    } else if (item === "Students Attendance") {
       setView("studentsAttendance");
     } else if (item === "Fees Details") {
       setView("feesDetails");
@@ -71,11 +75,29 @@ const TrainersDashboard = () => {
   };
 
   const handleRangeChange = (range) => {
-    // { year, startMonthIndex, endMonthIndex }
     console.log("TrainersDashboard range:", range);
   };
 
+  // ---- Add Trainer button logic ----
+  const handleAddTrainer = () => {
+    setTrainers((prev) => {
+      const nextId = prev.length ? Math.max(...prev.map((t) => t.id)) + 1 : 1;
+      const nextBatch = String(prev.length + 1).padStart(2, "0");
+      return [
+        ...prev,
+        {
+          id: nextId,
+          name: `Trainer ${nextId}`,
+          batch: nextBatch,
+          phone: "+91 99999 0000" + nextId,
+        },
+      ];
+    });
+  };
+  // ----------------------------------
+
   const renderMainContent = () => {
+    if (view === "classTimings") return <ClassTime />;
     if (view === "studentsAttendance") return <StudentsAttendancePage />;
     if (view === "feesDetails") return <FeesDetailsPage />;
     if (view === "addStudent") return <AddStudentDetailsPage />;
@@ -89,7 +111,7 @@ const TrainersDashboard = () => {
             <span className="mr-2 text-lg text-gray-300">🔍</span>
             <input
               type="text"
-              placeholder="Search by name..."
+              placeholder="Search trainers by name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="bg-transparent outline-none text-sm w-full placeholder:text-gray-400"
@@ -111,9 +133,13 @@ const TrainersDashboard = () => {
 
           <div className="flex items-center gap-3">
             <MonthRangePicker onChange={handleRangeChange} />
-            <button className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
+            <button
+              type="button"
+              onClick={handleAddTrainer}
+              className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold"
+            >
               <span>➕</span>
-              <span>Add</span>
+              <span>Add Trainer</span>
             </button>
           </div>
         </div>

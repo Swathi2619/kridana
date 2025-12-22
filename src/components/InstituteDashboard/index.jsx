@@ -1,3 +1,4 @@
+// src/components/InstituteDashboard/index.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InstituteDataPage from "./InstituteDataPage";
@@ -8,15 +9,17 @@ import SalaryDetailsPage from "./SalaryDetailsPage";
 import AddTrainerDetailsPage from "./AddTrainerDetailsPage";
 import AddStudentDetailsPage from "./AddStudentDetailsPage";
 import PaymentsPage from "./PaymentsPage";
+import ClassTime from "./ClassTime";
 
 const sidebarItems = [
   "Home",
   "Students Attendance",
-  "Trainer’s Attendance",
+  "Trainer's Attendance",
   "Fees Details",
   "Salary Details",
   "Add Trainer Details",
   "Add Student Details",
+  "Class Timings",
   "Inbox",
   "Shop",
   "Edit Profile",
@@ -29,8 +32,8 @@ const sidebarItems = [
 ];
 
 const InstituteDashboard = () => {
-  const [activeMenu, setActiveMenu] = useState("Home");
   const navigate = useNavigate();
+  const [activeMenu, setActiveMenu] = useState("Home");
 
   const [students, setStudents] = useState(
     Array.from({ length: 8 }).map((_, i) => ({
@@ -57,18 +60,61 @@ const InstituteDashboard = () => {
       navigate("/logout");
       return;
     }
-
     if (item === "Shop") {
       navigate("/shop");
       return;
     }
-
     if (item === "Edit Profile") {
       navigate("/institute-signup");
       return;
     }
+  };
 
-    if (item === "Home") return;
+  // ---- Add helpers shared across pages ----
+  const addStudentFromForm = (student) => {
+    setStudents((prev) => {
+      const nextId = prev.length ? Math.max(...prev.map((s) => s.id)) + 1 : 1;
+      const nextBatch = String(prev.length + 1).padStart(2, "0");
+      return [...prev, { id: nextId, batch: nextBatch, ...student }];
+    });
+  };
+
+  const addTrainerFromForm = (trainer) => {
+    setTrainers((prev) => {
+      const nextId = prev.length ? Math.max(...prev.map((t) => t.id)) + 1 : 1;
+      return [...prev, { id: nextId, ...trainer }];
+    });
+  };
+
+  const addStudentQuick = () => {
+    setStudents((prev) => {
+      const nextId = prev.length ? Math.max(...prev.map((s) => s.id)) + 1 : 1;
+      const nextBatch = String(prev.length + 1).padStart(2, "0");
+      return [
+        ...prev,
+        {
+          id: nextId,
+          name: `Student ${nextId}`,
+          batch: nextBatch,
+          phone: "+91 99999 00000",
+        },
+      ];
+    });
+  };
+
+  const addTrainerQuick = () => {
+    setTrainers((prev) => {
+      const nextId = prev.length ? Math.max(...prev.map((t) => t.id)) + 1 : 1;
+      return [
+        ...prev,
+        {
+          id: nextId,
+          name: `Trainer ${nextId}`,
+          category: "Cricket",
+          phone: "+91 88888 00000",
+        },
+      ];
+    });
   };
 
   const renderMainContent = () => {
@@ -83,24 +129,32 @@ const InstituteDashboard = () => {
           onDeleteTrainer={(id) =>
             setTrainers((prev) => prev.filter((t) => t.id !== id))
           }
+          onAddStudent={addStudentQuick}
+          onAddTrainer={addTrainerQuick}
         />
       );
 
-    if (activeMenu === "Students Attendance")
-      return <StudentsAttendancePage />;
+    if (activeMenu === "Class Timings") return <ClassTime />;
 
-    if (activeMenu === "Trainer’s Attendance")
-      return <TrainersAttendancePage />;
+    if (activeMenu === "Students Attendance")
+      return <StudentsAttendancePage students={students} />;
+
+    if (activeMenu === "Trainer's Attendance")
+      return <TrainersAttendancePage trainers={trainers} />;
 
     if (activeMenu === "Fees Details") return <FeesDetailsPage />;
 
     if (activeMenu === "Salary Details") return <SalaryDetailsPage />;
 
     if (activeMenu === "Add Trainer Details")
-      return <AddTrainerDetailsPage />;
+      return (
+        <AddTrainerDetailsPage onAddTrainer={addTrainerFromForm} />
+      );
 
     if (activeMenu === "Add Student Details")
-      return <AddStudentDetailsPage />;
+      return (
+        <AddStudentDetailsPage onAddStudent={addStudentFromForm} />
+      );
 
     if (activeMenu === "Payment Details") return <PaymentsPage />;
 
@@ -146,7 +200,7 @@ const InstituteDashboard = () => {
               type="button"
               onClick={() => handleMenuClick(item)}
               className={
-                "w-full text-left px-4 py-3 border-b border-orange-200 cursor-pointer transition-colors " +
+                "w-full text-left px-4 py-3 border-b border-orange-200 cursor-pointer transition-colors text-lg " +
                 (item === activeMenu
                   ? "bg-orange-500 text-white font-semibold"
                   : "hover:bg-orange-200")
