@@ -1,42 +1,86 @@
 // src/components/FullProductPage.jsx
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const FullProductPage = ({ onBack, product, onAddToCart, cartCount = 0, onViewCart }) => {
-  if (!product) return null; // safety
+const FullProductPage = ({
+  onBack,
+  product,
+  onAddToCart,
+  cartCount = 0,
+  onViewCart,
+}) => {
+  const navigate = useNavigate();      // ✅ hook at top
+
+  if (!product) return null;           // ✅ safe early return after hooks
+
+  const price = product.price ?? 0;
+  const mrp = Math.round(price * 1.2);
+
+  const handleBuyNow = () => {
+    navigate("/AddressPage");
+  };
 
   return (
-    <div className="min-h-screen bg-gray-600 flex">
-      {/* Left peach panel (full height) */}
-      <aside className="w-64 bg-orange-200" />
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* LEFT: images & bottom buttons, flex-1 */}
+      <aside className="flex-1 max-w-[50%] border-r border-gray-200 bg-white flex flex-col">
+        {/* thumbnails + main image */}
+        <div className="flex-1 flex">
+          {/* thumbnails */}
+          <div className="w-20 border-r border-gray-100 flex flex-col items-center gap-3 py-6 bg-gray-50">
+            {[1, 2, 3, 4].map((i) => (
+              <button
+                key={i}
+                className="w-14 h-20 rounded-md border border-gray-200 bg-white flex items-center justify-center text-[10px] text-gray-400 hover:border-pink-500 transition"
+              >
+                img
+              </button>
+            ))}
+          </div>
 
-      {/* Right main area */}
-      <main className="flex-1 bg-white flex flex-col px-6 pt-3 pb-6">
-        {/* Top row: back + search + icons */}
-        <div className="flex items-center gap-3 mb-4">
+          {/* big image */}
+          <div className="flex-1 flex items-center justify-center p-8">
+            <div className="w-full max-w-sm aspect-[3/4] bg-white border border-gray-200 rounded-2xl shadow-sm flex items-center justify-center">
+              <span className="text-6xl text-gray-300">📦</span>
+            </div>
+          </div>
+        </div>
+
+        {/* bottom Add / Buy buttons */}
+        <div className="flex border-t border-gray-200">
+          <button
+            onClick={() => onAddToCart(product)}
+            className="flex-1 py-3 bg-white text-pink-600 font-semibold flex items-center justify-center gap-2 hover:bg-pink-50 transition text-sm"
+          >
+            🛒 Add to Cart
+          </button>
+          <button
+            onClick={handleBuyNow}
+            className="flex-1 py-3 bg-pink-600 text-white font-semibold flex items-center justify-center gap-2 hover:bg-pink-700 transition text-sm"
+          >
+            ➤ Buy Now
+          </button>
+        </div>
+      </aside>
+
+      {/* RIGHT: details, flex-1 */}
+      <main className="flex-1 max-w-[50%] flex flex-col">
+        {/* top bar: back + icons only */}
+        <div className="flex items-center justify-between px-8 py-4 border-b border-gray-200 bg-white sticky top-0 z-10">
           <button
             onClick={onBack}
-            className="text-xs text-orange-500 underline mr-2"
+            className="text-xs text-pink-600 font-semibold flex items-center gap-1 hover:underline"
           >
             ← Back
           </button>
 
-          {/* Search box */}
-          <div className="flex items-center flex-1 h-8 border border-gray-300 rounded-sm bg-white text-xs">
-            <span className="ml-2 mr-1 text-[11px] text-blue-500">🔍</span>
-            <input
-              className="flex-1 px-1 outline-none text-xs"
-              placeholder="Search"
-            />
-          </div>
-
-          {/* Icons on right */}
           <div className="flex items-center gap-2">
-            <button className="w-8 h-8 rounded-full bg-orange-400 text-white text-xs flex items-center justify-center">
+            <button className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs hover:bg-gray-200">
               ♥
             </button>
-            <button 
+            <button
               onClick={onViewCart}
-              className="w-8 h-8 rounded-full bg-gray-100 text-xs flex items-center justify-center relative group hover:bg-orange-100 transition"
+              className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs relative hover:bg-gray-200"
             >
               🛒
               {cartCount > 0 && (
@@ -45,67 +89,92 @@ const FullProductPage = ({ onBack, product, onAddToCart, cartCount = 0, onViewCa
                 </span>
               )}
             </button>
-            <button className="w-8 h-8 rounded-full bg-gray-200" />
           </div>
         </div>
 
-        {/* Product content area */}
-        <div className="flex-1 flex bg-white">
-          {/* Left product image area */}
-          <div className="flex-1 p-6 flex items-center justify-center">
-            <div className="w-full max-w-md h-96 bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl shadow-lg flex items-center justify-center">
-              <span className="text-4xl text-gray-500">📦</span>
-            </div>
-          </div>
-
-          {/* Right product info + Add button */}
-          <div className="w-80 p-8 flex flex-col gap-6 bg-white border-l border-gray-200">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                {product.name}
-              </h1>
-              <div className="flex items-center gap-2 text-sm text-orange-600 font-semibold">
-                <span>⭐</span>
-                <span>4.8 (120 reviews)</span>
-              </div>
-            </div>
-
-            <p className="text-gray-600 leading-relaxed text-sm">
-              {product.description || "High-quality sports product with premium materials. Perfect for your training sessions."}
+        {/* content */}
+        <div className="flex-1 overflow-y-auto px-8 py-6">
+          {/* title + rating + price */}
+          <section className="space-y-3 mb-6">
+            <h1 className="text-xl font-semibold text-gray-900">
+              {product.name}
+            </h1>
+            <p className="text-sm text-gray-600">
+              {product.description ||
+                "High-quality sports product designed for comfort and performance."}
             </p>
 
-            <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">
+                ⭐ 3.8
+              </span>
+              <span className="text-xs text-gray-500">
+                21,875 Ratings · 8,723 Reviews
+              </span>
+            </div>
+
+            <div className="space-y-1">
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold text-gray-900">
-                  ₹ {product.price?.toLocaleString("en-IN") || "0"}
+                <span className="text-2xl font-bold text-gray-900">
+                  ₹ {price.toLocaleString("en-IN")}
                 </span>
-                <span className="text-sm text-gray-500 line-through">
-                  ₹ {(product.price * 1.2)?.toLocaleString("en-IN") || "0"}
+                <span className="text-sm text-gray-400 line-through">
+                  ₹ {mrp.toLocaleString("en-IN")}
                 </span>
-                <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">
+                <span className="text-xs text-green-600 font-semibold">
                   20% off
                 </span>
               </div>
+              <p className="text-xs text-gray-500">Free Delivery</p>
+            </div>
+          </section>
 
-              {/* Add to Cart Button */}
-              <button
-                onClick={() => onAddToCart(product)}
-                className="w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-lg font-bold rounded-2xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-              >
-                ⊕ Add to Cart
+          {/* Select Size */}
+          <section className="border-t border-gray-200 pt-5 pb-6">
+            <h2 className="text-sm font-semibold mb-3">Select Size</h2>
+            <div className="flex flex-wrap gap-3">
+              {["S", "M", "L", "XL"].map((size) => (
+                <button
+                  key={size}
+                  className="w-12 h-12 rounded-full border border-gray-300 text-xs flex flex-col items-center justify-center hover:border-pink-500 hover:text-pink-600 transition bg-white"
+                >
+                  <span>{size}</span>
+                  <span className="text-[10px] text-gray-500">
+                    ₹ {price.toLocaleString("en-IN")}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Product Highlights */}
+          <section className="border-t border-gray-200 pt-5 pb-10">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-semibold">Product Highlights</h2>
+              <button className="text-[11px] text-pink-600 font-semibold">
+                COPY
               </button>
+            </div>
 
-              {/* Quick actions */}
-              <div className="flex gap-3 pt-4 border-t border-gray-200">
-                <button className="flex-1 py-2 px-4 border border-gray-300 rounded-xl text-sm font-semibold hover:bg-gray-50 transition">
-                  🛒 Buy Now
-                </button>
-                <button className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center text-xl hover:bg-gray-200 transition">
-                  ♥
-                </button>
+            <div className="grid grid-cols-2 gap-y-3 text-xs">
+              <div>
+                <p className="text-gray-400">Color</p>
+                <p className="text-gray-800">Black</p>
+              </div>
+              <div>
+                <p className="text-gray-400">Fabric</p>
+                <p className="text-gray-800">Polyester</p>
+              </div>
+              <div>
+                <p className="text-gray-400">Fit / Shape</p>
+                <p className="text-gray-800">Regular</p>
+              </div>
+              <div>
+                <p className="text-gray-400">Length</p>
+                <p className="text-gray-800">Calf-length</p>
               </div>
             </div>
-          </div>
+          </section>
         </div>
       </main>
     </div>

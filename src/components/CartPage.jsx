@@ -12,32 +12,21 @@ const CartPage = () => {
   };
 
   const handleCheckout = () => {
-    alert("Proceeding to checkout...");
+    navigate("/AddressPage");
   };
-
-  const handleSearchChange = () => {};
 
   // EMPTY CART
   if (!cartItems || cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-white flex flex-col px-6 pt-3 pb-6">
         {/* top bar */}
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center justify-between mb-4">
           <button
             onClick={handleBack}
-            className="text-xs text-orange-500 underline mr-2"
+            className="text-xs text-orange-500 underline"
           >
             ← Back
           </button>
-
-          <div className="flex items-center flex-1 h-8 border border-gray-300 rounded-sm bg-white text-xs">
-            <span className="ml-2 mr-1 text-[11px] text-blue-500">🔍</span>
-            <input
-              className="flex-1 px-1 outline-none text-xs"
-              placeholder="Search cart"
-              onChange={handleSearchChange}
-            />
-          </div>
 
           <div className="flex items-center gap-2">
             <button className="w-8 h-8 rounded-full bg-orange-400 text-white text-xs flex items-center justify-center">
@@ -78,22 +67,13 @@ const CartPage = () => {
   return (
     <div className="min-h-screen bg-white flex flex-col px-6 pt-3 pb-6">
       {/* top bar */}
-      <div className="flex items-center gap-3 mb-4">
+      <div className="flex items-center justify-between mb-4">
         <button
           onClick={handleBack}
-          className="text-xs text-orange-500 underline mr-2"
+          className="text-xs text-orange-500 underline"
         >
           ← Back
         </button>
-
-        <div className="flex items-center flex-1 h-8 border border-gray-300 rounded-sm bg-white text-xs">
-          <span className="ml-2 mr-1 text-[11px] text-blue-500">🔍</span>
-          <input
-            className="flex-1 px-1 outline-none text-xs"
-            placeholder="Search cart"
-            onChange={handleSearchChange}
-          />
-        </div>
 
         <div className="flex items-center gap-2">
           <button className="w-8 h-8 rounded-full bg-orange-400 text-white text-xs flex items-center justify-center">
@@ -172,7 +152,7 @@ const CartPage = () => {
             className="px-10 py-2.5 bg-orange-500 text-white text-sm font-semibold rounded-full
                        hover:bg-orange-600 transition mx-auto"
           >
-            Proceed to Checkout
+            Proceed to Pay
           </button>
 
           <span className="text-sm font-semibold">

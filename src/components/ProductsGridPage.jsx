@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
+import FullProductPage from "./FullProductPage";
 
 const products = [
   { id: 101, name: "Running Shoes", price: 2999, description: "Lightweight running shoes" },
@@ -26,7 +27,9 @@ const ProductsGridPage = () => {
   const [search, setSearch] = useState("");
   const [likedProducts, setLikedProducts] = useState([]);
   const [showLiked, setShowLiked] = useState(false);
-  const [selectedPriceRanges, setSelectedPriceRanges] = useState([]); // NEW
+  const [selectedPriceRanges, setSelectedPriceRanges] = useState([]);
+  const [view, setView] = useState("grid"); // "grid" | "full"
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const handleBack = () => navigate("/shop");
   const handleViewCart = () => navigate("/cart");
@@ -42,17 +45,25 @@ const ProductsGridPage = () => {
   const isLiked = (id) => likedProducts.some((p) => p.id === id);
   const likedCount = likedProducts.length;
 
-  // toggle a price range checkbox
   const togglePriceRange = (id) => {
     setSelectedPriceRanges((prev) =>
       prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id]
     );
   };
 
+  const openFullProduct = (product) => {
+    setSelectedProduct(product);
+    setView("full");
+  };
+
+  const handleBackFromFull = () => {
+    setView("grid");
+    setSelectedProduct(null);
+  };
+
   const normalizedSearch = search.trim().toLowerCase();
 
   const filteredProducts = products.filter((p) => {
-    // text filter
     const name = p.name.toLowerCase();
     const desc = (p.description || "").toLowerCase();
     const matchesSearch =
@@ -60,11 +71,7 @@ const ProductsGridPage = () => {
       name.includes(normalizedSearch) ||
       desc.includes(normalizedSearch);
 
-    // price filter
-    if (selectedPriceRanges.length === 0) {
-      // no price filter selected → only search filter
-      return matchesSearch;
-    }
+    if (selectedPriceRanges.length === 0) return matchesSearch;
 
     const price = p.price;
     const inAnyRange = PRICE_RANGES.some((range) => {
@@ -73,8 +80,22 @@ const ProductsGridPage = () => {
     });
 
     return matchesSearch && inAnyRange;
-  }); // typical multi-filter pattern[web:66]
+  });
 
+  // ---------- FULL PRODUCT VIEW ----------
+  if (view === "full" && selectedProduct) {
+    return (
+      <FullProductPage
+        onBack={handleBackFromFull}
+        product={selectedProduct}
+        onAddToCart={addToCart}
+        cartCount={cartCount}
+        onViewCart={handleViewCart}
+      />
+    );
+  }
+
+  // ---------- GRID VIEW ----------
   return (
     <div className="min-h-screen bg-white flex">
       {/* left sidebar */}
@@ -102,7 +123,6 @@ const ProductsGridPage = () => {
           </h3>
           <p className="mt-2 font-semibold">Price</p>
 
-          {/* PRICE FILTER CHECKBOXES */}
           <div className="mt-2 space-y-2 text-sm">
             {PRICE_RANGES.map((range) => (
               <label
@@ -230,9 +250,16 @@ const ProductsGridPage = () => {
                            transition-transform duration-200 hover:-translate-y-1 hover:shadow-xl"
               >
                 <div className="w-full text-left">
-                  <div className="relative bg-gray-100 h-40">
+                  {/* IMAGE AREA – CLICK TO OPEN FULL PRODUCT */}
+                  <div
+                    className="relative bg-gray-100 h-40 cursor-pointer"
+                    onClick={() => openFullProduct(product)}
+                  >
                     <button
-                      onClick={() => toggleLike(product)}
+                      onClick={(e) => {
+                        e.stopPropagation(); // don't open full page when liking
+                        toggleLike(product);
+                      }}
                       className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-sm ${
                         liked
                           ? "bg-orange-500 text-white"
