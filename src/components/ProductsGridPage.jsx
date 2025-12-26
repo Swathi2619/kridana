@@ -1,6 +1,8 @@
+// src/components/ProductsGridPage.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
+import { useWishlist } from "../contexts/WishlistContext";
 import FullProductPage from "./FullProductPage";
 
 const products = [
@@ -23,27 +25,17 @@ const PRICE_RANGES = [
 const ProductsGridPage = () => {
   const navigate = useNavigate();
   const { cartCount, addToCart } = useCart();
+  const { wishlistItems, addToWishlist, removeFromWishlist, wishlistCount } =
+    useWishlist();
 
   const [search, setSearch] = useState("");
-  const [likedProducts, setLikedProducts] = useState([]);
-  const [showLiked, setShowLiked] = useState(false);
   const [selectedPriceRanges, setSelectedPriceRanges] = useState([]);
   const [view, setView] = useState("grid"); // "grid" | "full"
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const handleBack = () => navigate("/shop");
   const handleViewCart = () => navigate("/cart");
-
-  const toggleLike = (product) => {
-    setLikedProducts((prev) => {
-      const exists = prev.find((p) => p.id === product.id);
-      if (exists) return prev.filter((p) => p.id !== product.id);
-      return [...prev, product];
-    });
-  };
-
-  const isLiked = (id) => likedProducts.some((p) => p.id === id);
-  const likedCount = likedProducts.length;
+  const handleViewWishlist = () => navigate("/wishlist");
 
   const togglePriceRange = (id) => {
     setSelectedPriceRanges((prev) =>
@@ -82,6 +74,8 @@ const ProductsGridPage = () => {
     return matchesSearch && inAnyRange;
   });
 
+  const isLiked = (id) => wishlistItems.some((p) => p.id === id);
+
   // ---------- FULL PRODUCT VIEW ----------
   if (view === "full" && selectedProduct) {
     return (
@@ -100,7 +94,10 @@ const ProductsGridPage = () => {
     <div className="min-h-screen bg-white flex">
       {/* left sidebar */}
       <aside className="w-72 bg-orange-100 p-6 space-y-6">
-        <button onClick={handleBack} className="mb-4 text-sm text-orange-600 underline">
+        <button
+          onClick={handleBack}
+          className="mb-4 text-sm text-orange-600 underline"
+        >
           ← Back
         </button>
 
@@ -171,14 +168,15 @@ const ProductsGridPage = () => {
             />
           </div>
 
+          {/* wishlist icon – uses global count and goes to wishlist page */}
           <button
-            onClick={() => setShowLiked((prev) => !prev)}
+            onClick={handleViewWishlist}
             className="relative w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 text-xl"
           >
             ♥
-            {likedCount > 0 && (
+            {wishlistCount > 0 && (
               <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                {likedCount}
+                {wishlistCount}
               </span>
             )}
           </button>
@@ -196,48 +194,7 @@ const ProductsGridPage = () => {
           </button>
         </div>
 
-        {/* liked strip */}
-        {showLiked && likedProducts.length > 0 && (
-          <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-2xl">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-orange-600">
-                Liked Products ({likedCount})
-              </h3>
-              <button
-                onClick={() => setShowLiked(false)}
-                className="text-xs text-orange-500 underline"
-              >
-                Hide
-              </button>
-            </div>
-            <div className="flex gap-3 overflow-x-auto pb-1">
-              {likedProducts.map((p) => (
-                <div
-                  key={p.id}
-                  className="min-w-[180px] border border-orange-200 rounded-2xl bg-white px-3 py-2 text-sm"
-                >
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="font-semibold truncate max-w-[120px]">
-                      {p.name}
-                    </span>
-                    <button
-                      onClick={() => toggleLike(p)}
-                      className="text-red-500 text-base"
-                    >
-                      ♥
-                    </button>
-                  </div>
-                  <p className="text-xs text-gray-500 mb-1 line-clamp-2">
-                    {p.description}
-                  </p>
-                  <p className="text-sm font-bold">
-                    ₹ {p.price.toLocaleString("en-IN")}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* NOTE: old "Liked Products" strip removed completely */}
 
         {/* products grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -246,8 +203,7 @@ const ProductsGridPage = () => {
             return (
               <div
                 key={product.id}
-                className="border border-orange-200 rounded-3xl overflow-hidden bg-white shadow-sm
-                           transition-transform duration-200 hover:-translate-y-1 hover:shadow-xl"
+                className="border border-orange-200 rounded-3xl overflow-hidden bg-white shadow-sm transition-transform duration-200 hover:-translate-y-1 hover:shadow-xl"
               >
                 <div className="w-full text-left">
                   {/* IMAGE AREA – CLICK TO OPEN FULL PRODUCT */}
@@ -255,16 +211,20 @@ const ProductsGridPage = () => {
                     className="relative bg-gray-100 h-40 cursor-pointer"
                     onClick={() => openFullProduct(product)}
                   >
+                    {/* heart uses global wishlist */}
                     <button
                       onClick={(e) => {
-                        e.stopPropagation(); // don't open full page when liking
-                        toggleLike(product);
-                      }}
-                      className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-sm ${
+                        e.stopPropagation();
                         liked
+                          ? removeFromWishlist(product.id)
+                          : addToWishlist(product);
+                      }}
+                      className={
+                        "absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-sm " +
+                        (liked
                           ? "bg-orange-500 text-white"
-                          : "bg-white text-orange-500"
-                      }`}
+                          : "bg-white text-orange-500")
+                      }
                     >
                       ♥
                     </button>
@@ -293,8 +253,7 @@ const ProductsGridPage = () => {
                 <div className="px-3 pb-3">
                   <button
                     onClick={() => addToCart(product)}
-                    className="w-full bg-orange-500 text-white px-4 py-1.5 rounded-full text-sm font-semibold flex items-center justify-center gap-1
-                               hover:bg-orange-600 transition-colors"
+                    className="w-full bg-orange-500 text-white px-4 py-1.5 rounded-full text-sm font-semibold flex items-center justify-center gap-1 hover:bg-orange-600 transition-colors"
                   >
                     ⊕ Add to Cart
                   </button>

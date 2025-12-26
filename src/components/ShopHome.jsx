@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
+import { useWishlist } from "../contexts/WishlistContext";
 
 const categories = [
   { id: 1, title: "Upper Wear", image: "/upperwear.jpg" },
@@ -8,6 +9,9 @@ const categories = [
   { id: 3, title: "GYM", image: "/gym.jpg" },
   { id: 4, title: "Head wear", image: "/headwear.jpg" },
   { id: 5, title: "Sports Equipment", image: "/sportsequipment.jpg" },
+  { id: 6, title: "Sports Equipment", image: "/sportsequipment.jpg" },
+  { id: 7, title: "Sports Equipment", image: "/sportsequipment.jpg" },
+  { id: 8, title: "Sports Equipment", image: "/sportsequipment.jpg" },
 ];
 
 const recommended = [
@@ -41,30 +45,63 @@ const recommended = [
 const ShopHome = () => {
   const navigate = useNavigate();
   const { cartCount } = useCart();
+  const { wishlistCount } = useWishlist();
 
   const handleViewCart = () => navigate("/cart");
   const handleOpenGrid = () => navigate("/shop/products");
+  const handleOpenWishlist = () => navigate("/wishlist");
+
+  const catRowRef = useRef(null);
+  const firstCardRef = useRef(null);
+  const [cardWidth, setCardWidth] = useState(220);
+
+  useEffect(() => {
+    if (firstCardRef.current) {
+      const rect = firstCardRef.current.getBoundingClientRect();
+      setCardWidth(rect.width + 16);
+    }
+  }, []);
+
+  const scrollCategories = (direction) => {
+    if (!catRowRef.current) return;
+    const offset = direction === "left" ? -cardWidth : cardWidth;
+    catRowRef.current.scrollBy({ left: offset, behavior: "smooth" });
+  };
 
   return (
     <div className="min-h-screen bg-white">
       {/* hero */}
       <div className="relative">
         <div className="w-full h-[260px] sm:h-[340px] md:h-[420px] lg:h-[480px] overflow-hidden">
-          <img src="/shop.jpg" alt="Store" className="w-full h-full object-cover" />
+          <img
+            src="/shop.jpg"
+            alt="Store"
+            className="w-full h-full object-cover"
+          />
         </div>
 
         <div className="absolute top-4 right-4 flex items-center gap-3">
-          <button className="w-11 h-11 rounded-full bg-white/95 backdrop-blur-sm shadow-xl flex items-center justify-center text-orange-500 text-lg">
+          {/* wishlist button with badge */}
+          <button
+            onClick={handleOpenWishlist}
+            className="relative w-11 h-11 rounded-full bg-white/95 backdrop-blur-sm shadow-xl flex items-center justify-center text-orange-500 text-lg"
+          >
             ♥
+            {wishlistCount > 0 && (
+              <span className="absolute -top-1 -right-1 h-5 min-w-[1.25rem] px-1 bg-red-500 text-white text-[10px] leading-none rounded-full flex items-center justify-center font-bold shadow">
+                {wishlistCount}
+              </span>
+            )}
           </button>
 
+          {/* cart with badge */}
           <button
             onClick={handleViewCart}
-            className="w-14 h-14 rounded-2xl bg-white/95 backdrop-blur-sm shadow-xl flex flex-col items-center justify-center text-orange-500 text-xl hover:bg-white transition-all duration-200"
+            className="relative w-14 h-14 rounded-2xl bg-white/95 backdrop-blur-sm shadow-xl flex items-center justify-center text-orange-500 text-2xl hover:bg-white transition-all duration-200"
           >
             🛒
             {cartCount > 0 && (
-              <span className="mt-1 w-6 h-6 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-lg">
+              <span className="absolute -top-1 -right-1 h-5 min-w-[1.25rem] px-1 bg-red-500 text-white text-[10px] leading-none rounded-full flex items-center justify-center font-bold shadow">
                 {cartCount}
               </span>
             )}
@@ -73,13 +110,25 @@ const ShopHome = () => {
       </div>
 
       {/* categories */}
-      <section className="max-w-6xl mx-auto px-4 -mt-12 sm:-mt-16 relative z-10">
-        <div className="bg-white rounded-2xl shadow-lg px-4 py-5 sm:px-6 sm:py-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            {categories.map((cat) => (
+      <section className="w-full px-4 mt-6">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => scrollCategories("left")}
+            className="hidden sm:flex w-8 h-8 rounded-full bg-gray-100 text-gray-600 items-center justify-center shadow hover:bg-gray-200"
+          >
+            ‹
+          </button>
+
+          <div
+            ref={catRowRef}
+            className="flex gap-4 overflow-x-auto no-scrollbar w-full"
+          >
+            {categories.map((cat, idx) => (
               <button
                 key={cat.id}
-                className="relative rounded-xl overflow-hidden h-28 sm:h-32 lg:h-36 group"
+                ref={idx === 0 ? firstCardRef : null}
+                className="relative w-52 h-20 rounded-xl overflow-hidden shadow-md bg-black flex-shrink-0 group"
               >
                 <img
                   src={cat.image}
@@ -87,12 +136,20 @@ const ShopHome = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
-                <span className="absolute inset-0 flex items-center justify-start pl-6 text-white font-semibold text-lg sm:text-xl">
+                <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-lg">
                   {cat.title}
                 </span>
               </button>
             ))}
           </div>
+
+          <button
+            type="button"
+            onClick={() => scrollCategories("right")}
+            className="hidden sm:flex w-8 h-8 rounded-full bg-gray-100 text-gray-600 items-center justify-center shadow hover:bg-gray-200"
+          >
+            ›
+          </button>
         </div>
       </section>
 

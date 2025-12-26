@@ -27,20 +27,6 @@ const CartPage = () => {
           >
             ← Back
           </button>
-
-          <div className="flex items-center gap-2">
-            <button className="w-8 h-8 rounded-full bg-orange-400 text-white text-xs flex items-center justify-center">
-              ♥
-            </button>
-            <button className="w-8 h-8 rounded-full bg-gray-100 text-xs flex items-center justify-center relative">
-              🛒
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center">
-                  {cartCount}
-                </span>
-              )}
-            </button>
-          </div>
         </div>
 
         {/* empty message */}
@@ -74,20 +60,6 @@ const CartPage = () => {
         >
           ← Back
         </button>
-
-        <div className="flex items-center gap-2">
-          <button className="w-8 h-8 rounded-full bg-orange-400 text-white text-xs flex items-center justify-center">
-            ♥
-          </button>
-          <button className="w-8 h-8 rounded-full bg-gray-100 text-xs flex items-center justify-center relative">
-            🛒
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center">
-                {cartCount}
-              </span>
-            )}
-          </button>
-        </div>
       </div>
 
       {/* cart items */}
@@ -149,8 +121,7 @@ const CartPage = () => {
 
           <button
             onClick={handleCheckout}
-            className="px-10 py-2.5 bg-orange-500 text-white text-sm font-semibold rounded-full
-                       hover:bg-orange-600 transition mx-auto"
+            className="px-10 py-2.5 bg-orange-500 text-white text-sm font-semibold rounded-full hover:bg-orange-600 transition mx-auto"
           >
             Proceed to Pay
           </button>

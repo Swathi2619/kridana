@@ -31,12 +31,15 @@ import Dance from "./Dance";
 
 import MonthRangePicker from "./components/MonthRangePicker";
 import CartPage from "./components/CartPage";
+import { WishlistProvider } from "./contexts/WishlistContext";
+import WishlistPage from "./components/WishlistPage";
 
 import "./index.css";
 
 function App() {
   return (
     <CartProvider>
+      <WishlistProvider>
       <Routes>
         <Route path="/" element={<RoleSelection />} />
         <Route path="/signup" element={<Signup />} />
@@ -68,10 +71,11 @@ function App() {
         <Route path="/IceSports" element={<IceSports />} />
         <Route path="/Wellness" element={<Wellness />} />
         <Route path="/Dance" element={<Dance />} />
-
         <Route path="/MonthRangePicker" element={<MonthRangePicker />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/wishlist" element={<WishlistPage />} />
       </Routes>
+      </WishlistProvider>
     </CartProvider>
   );
 }

@@ -1,16 +1,52 @@
 // src/components/AddAddressPage.jsx
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
 
 const AddAddressPage = () => {
   const { cartItems, total } = useCart();
   const navigate = useNavigate();
-
   const grandTotal = total;
 
+  // Form state
+  const [formData, setFormData] = useState({
+    email: "",
+    fullName: "",
+    phone: "",
+    address: "",
+    apartment: "",
+    city: "",
+    state: "",
+    zip: ""
+  });
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
   const handleContinueToPayment = () => {
-    navigate("/Payment");
+    // Basic validation
+    if (!formData.fullName || !formData.address || !formData.city || !formData.state) {
+      alert("Please fill in all required fields (Name, Address, City, State)");
+      return;
+    }
+
+    // Format address for PaymentPage
+    const formattedAddress = [
+      formData.fullName,
+      formData.address,
+      formData.apartment ? formData.apartment : "",
+      `${formData.city}, ${formData.state} ${formData.zip}`,
+      `Phone: ${formData.phone}`
+    ]
+    .filter(line => line.trim()) // Remove empty lines
+    .join("\n");
+
+    // Navigate with address state
+    navigate("/Payment", { state: { address: formattedAddress } });
   };
 
   const handleBackToCart = () => {
@@ -39,6 +75,9 @@ const AddAddressPage = () => {
               <p className="text-orange-500 font-semibold mb-1">Contact</p>
               <input
                 type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
                 placeholder="Enter E-mail"
                 className="w-full h-9 border border-gray-300 rounded px-3 text-xs mb-3"
               />
@@ -49,34 +88,59 @@ const AddAddressPage = () => {
 
               <div className="flex gap-3 mb-3">
                 <input
-                  placeholder="Full Name"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  placeholder="Full Name *"
                   className="flex-1 h-9 border border-gray-300 rounded px-3 text-xs"
+                  required
                 />
                 <input
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
                   placeholder="Phone Number"
                   className="flex-1 h-9 border border-gray-300 rounded px-3 text-xs"
                 />
               </div>
 
               <input
-                placeholder="Enter Address"
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
+                placeholder="Enter Address *"
                 className="w-full h-9 border border-gray-300 rounded px-3 text-xs mb-2.5"
+                required
               />
               <input
+                name="apartment"
+                value={formData.apartment}
+                onChange={handleInputChange}
                 placeholder="Apartment, Building, Landmark"
                 className="w-full h-9 border border-gray-300 rounded px-3 text-xs mb-2.5"
               />
 
               <div className="flex gap-3 mb-4">
                 <input
-                  placeholder="City"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  placeholder="City *"
                   className="flex-1 h-9 border border-gray-300 rounded px-3 text-xs"
+                  required
                 />
                 <input
-                  placeholder="State"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleInputChange}
+                  placeholder="State *"
                   className="flex-1 h-9 border border-gray-300 rounded px-3 text-xs"
+                  required
                 />
                 <input
+                  name="zip"
+                  value={formData.zip}
+                  onChange={handleInputChange}
                   placeholder="ZIP Code"
                   className="flex-1 h-9 border border-gray-300 rounded px-3 text-xs"
                 />

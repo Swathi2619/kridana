@@ -1,14 +1,33 @@
 // src/components/PaymentPage.jsx
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
 
 const PaymentPage = () => {
   const [method, setMethod] = useState("none"); // none | credit | apple | gpay | phonepe
-  const isCredit = method === "credit";
+  const location = useLocation();
   const navigate = useNavigate();
   const { cartItems, total } = useCart();
   const grandTotal = total;
+
+  // Get address from AddressPage or use default
+  const addressFromAddressPage =
+    location.state?.address ||
+    "John Doe\n123 Main St, Kurnool\nAndhra Pradesh 518001\nPhone: 9876543210";
+
+  // current saved main address
+  const [addressText, setAddressText] = useState(addressFromAddressPage);
+  // extra address list (for "Add New Address")
+  const [extraAddresses, setExtraAddresses] = useState([]);
+  // which address index is selected: 0 = main/shipping, 1.. = extras
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  // edit state
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
+  const [draftAddress, setDraftAddress] = useState(addressText);
+  const [isAddingNew, setIsAddingNew] = useState(false); // true when adding a new address
+
+  const isCredit = method === "credit";
 
   const handleBackToAddress = () => {
     navigate("/AddressPage");
@@ -23,9 +42,89 @@ const PaymentPage = () => {
     // optional: clear cart / redirect here
   };
 
+  // open edit for selected address
+  const handleEditClick = () => {
+    if (selectedIndex === 0) {
+      setDraftAddress(addressText);
+    } else {
+      setDraftAddress(extraAddresses[selectedIndex - 1] || "");
+    }
+    setIsAddingNew(false);
+    setIsEditingAddress(true);
+  };
+
+  // open add-new mode
+  const handleAddNewAddress = () => {
+    const newIndex = extraAddresses.length + 1; // first extra becomes index 1
+    setDraftAddress("");
+    setIsAddingNew(true);
+    setIsEditingAddress(true);
+    setSelectedIndex(newIndex); // select the new address tab immediately
+  };
+
+  const handleSaveClick = () => {
+    const trimmedAddress = draftAddress.trim();
+    if (!trimmedAddress) {
+      setIsEditingAddress(false);
+      setIsAddingNew(false);
+      return;
+    }
+
+    if (isAddingNew) {
+      // push new address at the end
+      const updated = [...extraAddresses, trimmedAddress];
+      setExtraAddresses(updated);
+      setSelectedIndex(updated.length); // last index (shipping=0)
+    } else {
+      // update existing
+      if (selectedIndex === 0) {
+        setAddressText(trimmedAddress);
+      } else {
+        const updated = [...extraAddresses];
+        updated[selectedIndex - 1] = trimmedAddress;
+        setExtraAddresses(updated);
+      }
+    }
+
+    setIsEditingAddress(false);
+    setIsAddingNew(false);
+  };
+
+  const handleCancelClick = () => {
+    setIsEditingAddress(false);
+    setIsAddingNew(false);
+  };
+
+  // delete currently selected extra address
+  const handleDeleteAddress = () => {
+    if (selectedIndex === 0) {
+      alert("Shipping address cannot be deleted.");
+      return;
+    }
+
+    const idx = selectedIndex - 1;
+    const updated = extraAddresses.filter((_, i) => i !== idx);
+    setExtraAddresses(updated);
+
+    if (updated.length === 0) {
+      setSelectedIndex(0);
+    } else if (selectedIndex > updated.length) {
+      setSelectedIndex(updated.length);
+    }
+  };
+
+  // helper to get currently selected address text
+  const getSelectedAddress = () => {
+    if (selectedIndex === 0) return addressText;
+    return extraAddresses[selectedIndex - 1] || "";
+  };
+
+  // label: first one is "Shipping Address", others are "Address 1, Address 2..."
+  const currentAddressLabel =
+    selectedIndex === 0 ? "Shipping Address" : `Address ${selectedIndex}`;
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      {/* same size as address card */}
       <div className="w-full max-w-7xl bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
         {/* header */}
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
@@ -35,21 +134,144 @@ const PaymentPage = () => {
           </span>
         </div>
 
-        {/* main content with equal padding */}
+        {/* main content */}
         <div className="p-6">
           <div className="flex flex-col md:flex-row gap-6">
-            {/* Payment section */}
+            {/* Payment + address section */}
             <section className="flex-[0.6] text-[13px] border border-gray-200 rounded-lg p-4">
-              <p className="font-semibold mb-2">Shipping Address</p>
+              <p className="font-semibold mb-2 flex items-center justify-between">
+                <span>{currentAddressLabel}</span>
 
-              {/* placeholder address box */}
-              <div className="border border-gray-300 rounded bg-white mb-4">
-                <div className="h-32 px-6 py-4 space-y-2 flex flex-col justify-center">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="w-3/4 h-3 rounded bg-gray-200" />
-                  ))}
-                </div>
+                <span className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleAddNewAddress}
+                    className="text-[11px] text-orange-500 hover:text-orange-600 underline"
+                  >
+                    + New Address
+                  </button>
+
+                  {!isEditingAddress && (
+                    <button
+                      type="button"
+                      onClick={handleEditClick}
+                      className="flex items-center gap-1 text-[11px] text-orange-500 hover:text-orange-600"
+                    >
+                      <svg
+                        className="w-3 h-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M11 4h2m-1-1v2m5.657 1.343l-1.414-1.414a2 2 0 00-2.828 0L5 12v3h3l8.414-8.414a2 2 0 000-2.828z"
+                        />
+                      </svg>
+                      Edit
+                    </button>
+                  )}
+
+                  {!isEditingAddress && selectedIndex !== 0 && (
+                    <button
+                      type="button"
+                      onClick={handleDeleteAddress}
+                      className="text-[11px] text-red-500 hover:text-red-600"
+                    >
+                      Delete
+                    </button>
+                  )}
+                </span>
+              </p>
+
+              {/* address chips */}
+              <div className="flex flex-wrap gap-2 mb-2">
+                {/* first chip is "Shipping Address" */}
+                <button
+                  type="button"
+                  onClick={() => setSelectedIndex(0)}
+                  className={
+                    "px-2 py-1 text-[11px] rounded-full border " +
+                    (selectedIndex === 0
+                      ? "border-orange-500 bg-orange-50 text-orange-600"
+                      : "border-gray-300 text-gray-700")
+                  }
+                >
+                  Shipping Address
+                </button>
+
+                {/* extra addresses labeled Address 1, Address 2, ... */}
+                {extraAddresses.map((_, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setSelectedIndex(idx + 1)}
+                    className={
+                      "px-2 py-1 text-[11px] rounded-full border " +
+                      (selectedIndex === idx + 1
+                        ? "border-orange-500 bg-orange-50 text-orange-600"
+                        : "border-gray-300 text-gray-700")
+                    }
+                  >
+                    Address {idx + 1}
+                  </button>
+                ))}
               </div>
+
+              {/* view OR edit box */}
+              {!isEditingAddress ? (
+                <div className="border border-gray-300 rounded bg-white mb-2">
+                  <div className="min-h-[80px] px-4 py-3 flex flex-col justify-center">
+                    {getSelectedAddress()
+                      .split("\n")
+                      .map((line, idx) => (
+                        <p
+                          key={idx}
+                          className="text-[12px] text-gray-800 leading-tight"
+                        >
+                          {line}
+                        </p>
+                      ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="border border-orange-500 rounded bg-white mb-2">
+                  <textarea
+                    autoFocus
+                    value={draftAddress}
+                    onChange={(e) => setDraftAddress(e.target.value)}
+                    rows={3}
+                    className="w-full min-h-[80px] border-none rounded px-4 py-3 text-[12px] leading-tight resize-none focus:outline-none"
+                    placeholder={
+                      isAddingNew
+                        ? "Enter new shipping address..."
+                        : "Edit shipping address..."
+                    }
+                  />
+                </div>
+              )}
+
+              {/* Save / Cancel row only in edit mode */}
+              {isEditingAddress && (
+                <div className="flex gap-2 mb-4">
+                  <button
+                    type="button"
+                    onClick={handleSaveClick}
+                    className="flex-1 h-8 bg-orange-500 text-white text-[12px] font-semibold rounded hover:bg-orange-600 transition"
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCancelClick}
+                    className="flex-1 h-8 border border-gray-300 text-[12px] font-semibold rounded text-gray-700 hover:bg-gray-100 transition"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
 
               <p className="font-semibold mb-2">Payment Options</p>
 

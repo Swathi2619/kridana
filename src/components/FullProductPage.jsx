@@ -1,6 +1,6 @@
-// src/components/FullProductPage.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useWishlist } from "../contexts/WishlistContext";
 
 const FullProductPage = ({
   onBack,
@@ -9,9 +9,10 @@ const FullProductPage = ({
   cartCount = 0,
   onViewCart,
 }) => {
-  const navigate = useNavigate();      // ✅ hook at top
+  const navigate = useNavigate();
+  const { addToWishlist, wishlistCount } = useWishlist();
 
-  if (!product) return null;           // ✅ safe early return after hooks
+  if (!product) return null;
 
   const price = product.price ?? 0;
   const mrp = Math.round(price * 1.2);
@@ -20,13 +21,17 @@ const FullProductPage = ({
     navigate("/AddressPage");
   };
 
+  const handleWishlistClick = () => {
+    addToWishlist(product);
+    navigate("/wishlist");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* LEFT: images & bottom buttons, flex-1 */}
+      {/* LEFT */}
       <aside className="flex-1 max-w-[50%] border-r border-gray-200 bg-white flex flex-col">
         {/* thumbnails + main image */}
         <div className="flex-1 flex">
-          {/* thumbnails */}
           <div className="w-20 border-r border-gray-100 flex flex-col items-center gap-3 py-6 bg-gray-50">
             {[1, 2, 3, 4].map((i) => (
               <button
@@ -38,7 +43,6 @@ const FullProductPage = ({
             ))}
           </div>
 
-          {/* big image */}
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="w-full max-w-sm aspect-[3/4] bg-white border border-gray-200 rounded-2xl shadow-sm flex items-center justify-center">
               <span className="text-6xl text-gray-300">📦</span>
@@ -46,38 +50,47 @@ const FullProductPage = ({
           </div>
         </div>
 
-        {/* bottom Add / Buy buttons */}
+        {/* bottom buttons */}
         <div className="flex border-t border-gray-200">
           <button
             onClick={() => onAddToCart(product)}
-            className="flex-1 py-3 bg-white text-pink-600 font-semibold flex items-center justify-center gap-2 hover:bg-pink-50 transition text-sm"
+            className="flex-1 py-3 bg-white text-orange-600 font-semibold flex items-center justify-center gap-2 hover:bg-pink-50 transition text-sm"
           >
             🛒 Add to Cart
           </button>
           <button
             onClick={handleBuyNow}
-            className="flex-1 py-3 bg-pink-600 text-white font-semibold flex items-center justify-center gap-2 hover:bg-pink-700 transition text-sm"
+            className="flex-1 py-3 bg-orange-600 text-white font-semibold flex items-center justify-center gap-2 hover:bg-pink-700 transition text-sm"
           >
             ➤ Buy Now
           </button>
         </div>
       </aside>
 
-      {/* RIGHT: details, flex-1 */}
+      {/* RIGHT */}
       <main className="flex-1 max-w-[50%] flex flex-col">
-        {/* top bar: back + icons only */}
         <div className="flex items-center justify-between px-8 py-4 border-b border-gray-200 bg-white sticky top-0 z-10">
           <button
             onClick={onBack}
-            className="text-xs text-pink-600 font-semibold flex items-center gap-1 hover:underline"
+            className="text-xs text-orange-600 font-semibold flex items-center gap-1 hover:underline"
           >
             ← Back
           </button>
 
           <div className="flex items-center gap-2">
-            <button className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs hover:bg-gray-200">
+            {/* wishlist icon with count */}
+            <button
+              onClick={handleWishlistClick}
+              className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs relative hover:bg-gray-200"
+            >
               ♥
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center">
+                  {wishlistCount}
+                </span>
+              )}
             </button>
+
             <button
               onClick={onViewCart}
               className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs relative hover:bg-gray-200"
@@ -92,9 +105,8 @@ const FullProductPage = ({
           </div>
         </div>
 
-        {/* content */}
+        {/* content (unchanged) */}
         <div className="flex-1 overflow-y-auto px-8 py-6">
-          {/* title + rating + price */}
           <section className="space-y-3 mb-6">
             <h1 className="text-xl font-semibold text-gray-900">
               {product.name}
@@ -129,7 +141,6 @@ const FullProductPage = ({
             </div>
           </section>
 
-          {/* Select Size */}
           <section className="border-t border-gray-200 pt-5 pb-6">
             <h2 className="text-sm font-semibold mb-3">Select Size</h2>
             <div className="flex flex-wrap gap-3">
@@ -147,13 +158,9 @@ const FullProductPage = ({
             </div>
           </section>
 
-          {/* Product Highlights */}
           <section className="border-t border-gray-200 pt-5 pb-10">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-semibold">Product Highlights</h2>
-              <button className="text-[11px] text-pink-600 font-semibold">
-                COPY
-              </button>
             </div>
 
             <div className="grid grid-cols-2 gap-y-3 text-xs">

@@ -5,3 +5,11 @@
 .slide-track {
   transition: transform 0.5s ease-out;
 }
+/* global CSS */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
