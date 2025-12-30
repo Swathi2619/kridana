@@ -1,6 +1,9 @@
 // src/pages/Signup.js  (used for normal users, and institute via ?role=institute)
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { auth, db } from "../firebase";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -19,21 +22,49 @@ export default function Signup() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (formData.password !== formData.rePassword) {
       alert("Passwords do not match");
       return;
     }
-    console.log("Signup data:", { role, ...formData });
-    navigate("/");
+
+    try {
+      // 🔹 USER signup only
+      if (role === "user") {
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          formData.emailPhone,
+          formData.password
+        );
+
+        const user = userCredential.user;
+
+        // 🔹 Save to USERS collection
+        await setDoc(doc(db, "users", user.uid), {
+          name: formData.name,
+          emailOrPhone: formData.emailPhone,
+          role: "user",
+          createdAt: serverTimestamp(),
+        });
+
+        console.log("User registered successfully");
+        navigate("/");
+      }
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white p-8">
       <div className="w-full max-w-md">
         <h2 className="text-3xl font-bold mb-6 text-orange-500">
-          {role === "institute" ? "Register Your Institute" : "Join Kridana Sports"}
+          {role === "institute"
+            ? "Register Your Institute"
+            : "Join Kridana Sports"}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -44,7 +75,9 @@ export default function Signup() {
             <input
               type="text"
               name="name"
-              placeholder={role === "institute" ? "Enter Institute Name" : "Enter Name"}
+              placeholder={
+                role === "institute" ? "Enter Institute Name" : "Enter Name"
+              }
               value={formData.name}
               onChange={handleChange}
               required
@@ -53,7 +86,9 @@ export default function Signup() {
           </div>
 
           <div>
-            <label className="block mb-1 text-orange-500">E-mail/Phone Number*</label>
+            <label className="block mb-1 text-orange-500">
+              E-mail/Phone Number*
+            </label>
             <input
               type="text"
               name="emailPhone"

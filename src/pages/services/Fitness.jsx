@@ -2,27 +2,23 @@ import React from "react";
 import { Search, Users, Building2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const TargetPrecisionPage = () => {
+const Fitness = () => {
   const navigate = useNavigate();
 
   const categories = [
-    "Archery",
-    "Shooting",
-    "Darts",
-    "Bowling",
-    "Golf",
-    "Billiards",
-    "Bocce",
-    "Lawn",
+    "Strength / Muscular Fitness",
+    "Muscular Endurance",
+    "Flexibility Fitness",
+    "Balance & Stability",
+    "Skill / Performance Fitness",
   ];
 
   const handleViewTrainers = () => {
-    // Pass Martial Arts filter via query param
-    navigate("/viewtrainers?category=Target&Precision");
+    navigate("/viewTrainers?category=Fitness");
   };
 
   const handleViewInstitutes = () => {
-    navigate("/viewinstitutes?category=Target&Precision");
+    navigate("/viewInstitutes?category=Fitness");
   };
 
   return (
@@ -30,10 +26,11 @@ const TargetPrecisionPage = () => {
       {/* ================= HERO SECTION ================= */}
       <section className="max-w-7xl mx-auto px-6 py-20 text-center">
         <h2 className="text-4xl md:text-5xl font-extrabold mb-6">
-          Forge Unshakable Focus
+          Elevate Your Fitness
         </h2>
         <p className="text-gray-600 max-w-2xl mx-auto mb-10">
-          Sharpen accuracy, control, and mindset with target and precision training
+          Boost endurance, power, and discipline through smart, personalized
+          fitness workouts.
         </p>
 
         {/* Hero Buttons */}
@@ -64,10 +61,10 @@ const TargetPrecisionPage = () => {
         </div>
       </section>
 
-      {/* ================= MARTIAL ARTS CATEGORIES ================= */}
+      {/* ================= FITNESS CATEGORIES ================= */}
       <section className="max-w-7xl mx-auto px-6 py-16">
         <h3 className="text-3xl font-bold text-orange-600 mb-12 text-center">
-          Target & Precision Sports
+          Fitness
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
@@ -79,7 +76,9 @@ const TargetPrecisionPage = () => {
               <div className="w-20 h-20 bg-white rounded-lg mb-4" />
               <h4 className="text-xl font-semibold mb-4">{item}</h4>
               <button
-                onClick={() => navigate("/view-trainers?category=MartialArts")}
+                onClick={() =>
+                  navigate(`/viewTrainers?category=${encodeURIComponent(item)}`)
+                }
                 className="bg-white text-orange-600 px-5 py-2 rounded-full font-medium hover:bg-gray-100 transition"
               >
                 Select
@@ -94,7 +93,7 @@ const TargetPrecisionPage = () => {
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h3 className="text-3xl font-bold mb-4">How it Works</h3>
           <p className="text-gray-600 mb-12">
-            Get started with your target & precision journey in three simple steps.
+            Get started with your fitness journey in three simple steps.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -104,8 +103,8 @@ const TargetPrecisionPage = () => {
               </div>
               <h4 className="font-bold text-lg mb-3">Find Your Trainers</h4>
               <p className="text-gray-600 mb-6">
-                Discover certified trainers tailored to your skill level and
-                goals.
+                Discover certified trainers who match your fitness goals and
+                level.
               </p>
               <button
                 onClick={handleViewTrainers}
@@ -121,7 +120,8 @@ const TargetPrecisionPage = () => {
               </div>
               <h4 className="font-bold text-lg mb-3">Find Your Institutes</h4>
               <p className="text-gray-600 mb-6">
-                Explore top-rated institutes with world-class facilities.
+                Explore academies with expert fitness coaches and modern
+                facilities.
               </p>
               <button
                 onClick={handleViewInstitutes}
@@ -137,7 +137,7 @@ const TargetPrecisionPage = () => {
               </div>
               <h4 className="font-bold text-lg mb-3">Start Training</h4>
               <p className="text-gray-600 mb-6">
-                Begin your target & precision journey and unlock your true potential.
+                Build a stronger, healthier body with focused fitness training.
               </p>
               <button className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition">
                 Get Started
@@ -150,4 +150,4 @@ const TargetPrecisionPage = () => {
   );
 };
 
-export default TargetPrecisionPage;
+export default Fitness;

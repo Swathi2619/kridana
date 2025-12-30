@@ -1,9 +1,10 @@
 // src/components/InstituteDashboard/InstituteDashboard.jsx
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { signOut } from "firebase/auth";
 import { auth, db } from "../../firebase";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 
 import InstituteDataPage from "./InstituteDataPage";
@@ -15,27 +16,24 @@ import AddTrainerDetailsPage from "./AddTrainerDetailsPage";
 import AddStudentDetailsPage from "./AddStudentDetailsPage";
 import PaymentsPage from "./PaymentsPage";
 import Editprofile from "./Editprofile";
-import ClassTime from "./ClassTime";
-import SellSportsMaterial from "./SellSportsMaterial";  // ✅ NEW SELL SPORTS MATERIAL
 
 const sidebarItems = [
   "Home",
-  "Edit Profile",
-  "Students Attendance",
-  "Trainer's Attendance",
-  "Class Timings",
+  //"Edit Profile",
+  //"Students Attendance",
+  //"Trainer’s Attendance",
   "Fees Details",
-  "Salary Details",
-  "Add Trainer Details",
-  "Add Student Details",
-  "Inbox",
-  "Shop",
-  "Sell Sports Material",     // ✅ ADDED SELL SPORTS MATERIAL
-  "Categories",
-  "Reports",
-  "Payment Details",
-  "Terms & Conditions",
-  "Privacy Policy",
+  //"Salary Details",
+  //"Add Trainer Details",
+  //"Add Student Details",
+  //"Inbox",
+  //"Shop",
+
+  //"Categories",
+  //"Reports",
+  //"Payment Details",
+  //"Terms & Conditions",
+  //"Privacy Policy",
   "Log Out",
 ];
 
@@ -73,7 +71,7 @@ const InstituteDashboard = () => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigate("/login", { replace: true });
+      navigate("/", { replace: true });
     } catch (err) {
       console.error("Logout error:", err);
     }
@@ -143,26 +141,22 @@ const InstituteDashboard = () => {
             }
           />
         );
-      case "Edit Profile":
-        return <Editprofile />;
-      case "Students Attendance":
-        return <StudentsAttendancePage />;
-      case "Trainer's Attendance":
-        return <TrainersAttendancePage />;
-      case "Class Timings":
-        return <ClassTime />;
+      //case "Edit Profile":
+      //return <Editprofile />;
+      //case "Students Attendance":
+      //return <StudentsAttendancePage />;
+      //case "Trainer’s Attendance":
+      //return <TrainersAttendancePage />;
       case "Fees Details":
         return <FeesDetailsPage />;
-      case "Salary Details":
-        return <SalaryDetailsPage />;
-      case "Add Trainer Details":
-        return <AddTrainerDetailsPage />;
-      case "Add Student Details":
-        return <AddStudentDetailsPage />;
-      case "Payment Details":
-        return <PaymentsPage />;
-      case "Sell Sports Material":  // ✅ NEW SELL SPORTS MATERIAL
-        return <SellSportsMaterial />;
+      //case "Salary Details":
+      //return <SalaryDetailsPage />;
+      //case "Add Trainer Details":
+      //return <AddTrainerDetailsPage />;
+      //case "Add Student Details":
+      //return <AddStudentDetailsPage />;
+      //case "Payment Details":
+      //return <PaymentsPage />;
       default:
         return (
           <div className="text-white">

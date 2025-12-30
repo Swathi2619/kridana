@@ -2,6 +2,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Trash2, Edit2 } from "lucide-react"; // npm install lucide-react
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { auth, db, storage } from "../firebase";
 
 export default function InstituteSignup() {
   const navigate = useNavigate();
@@ -13,11 +17,16 @@ export default function InstituteSignup() {
   const [formData, setFormData] = useState({
     // Step 1
     instituteName: "",
+    locationName: "",
+    latitude: "",
+    longitude: "",
     yearFounded: "",
     phoneNumber: "",
     email: "",
     licenseNumber: "",
     certification: "",
+    password: "",
+    confirmPassword: "",
     // Step 2
     address: "",
     zipCode: "",
@@ -57,15 +66,29 @@ export default function InstituteSignup() {
         !formData.phoneNumber ||
         !formData.email ||
         !formData.licenseNumber ||
-        !formData.certification
+        !formData.certification ||
+        !formData.password ||
+        !formData.confirmPassword
       ) {
         alert("Please fill all fields in Step 1");
         return false;
       }
+
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
         alert("Please enter a valid email");
         return false;
       }
+
+      if (formData.password !== formData.confirmPassword) {
+        alert("Passwords do not match");
+        return false;
+      }
+
+      if (formData.password.length < 6) {
+        alert("Password must be at least 6 characters");
+        return false;
+      }
+
       return true;
     }
 
@@ -108,17 +131,65 @@ export default function InstituteSignup() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateStep()) {
-      console.log("Institute signup data:", {
-        role,
-        ...formData,
-        profileImageFile,
+    if (!validateStep()) return;
+
+    try {
+      // 1️⃣ Create Auth account
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+
+      const uid = userCredential.user.uid;
+
+      // 2️⃣ Upload profile image (optional)
+      let profileImageUrl = "";
+      if (profileImageFile) {
+        const imageRef = ref(storage, `institutes/${uid}/profile.jpg`);
+        await uploadBytes(imageRef, profileImageFile);
+        profileImageUrl = await getDownloadURL(imageRef);
+      }
+
+      // 3️⃣ Save Institute data
+      await setDoc(doc(db, "institutes", uid), {
+        role: "institute",
+        status: "pending",
+
+        instituteName: formData.instituteName,
+        yearFounded: formData.yearFounded,
+        phoneNumber: formData.phoneNumber,
+        email: formData.email,
+        licenseNumber: formData.licenseNumber,
+        certification: formData.certification,
+
+        address: formData.address,
+        zipCode: formData.zipCode,
+        city: formData.city,
+        state: formData.state,
+        websiteLink: formData.websiteLink || "",
+
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        designation: formData.designation,
+        measurements: formData.measurements,
+
+        profileImageUrl,
+
+        // ✅ New location fields
+        locationName: formData.locationName,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
+
+        createdAt: serverTimestamp(),
       });
-      alert("Institute details saved!");
-      // redirect to /institute
+      alert("Institute registered successfully!");
       navigate("/institute");
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
     }
   };
 
@@ -131,10 +202,15 @@ export default function InstituteSignup() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">
-              Step 0{step}
-            </h2>
+            <h2 className="text-3xl font-bold text-gray-900">Step 0{step}</h2>
           </div>
+          <button
+            onClick={() => navigate("/login?role=institute")}
+            className="mt-10 text-orange-400 underline text-lg font-bold transition-transform duration-300 hover:scale-105 hover:text-orange-500"
+          >
+            Institute Sign In
+          </button>
+
           <button
             onClick={() => navigate("/institute")}
             className="text-gray-400 hover:text-gray-600 text-2xl"
@@ -214,6 +290,102 @@ export default function InstituteSignup() {
                     className="w-full border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:border-orange-500 transition"
                   />
                 </div>
+                <div className="border border-gray-300 rounded-lg p-4 space-y-4">
+                  <h3 className="text-lg font-bold text-gray-900 pb-2">
+                    Institute Location
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block mb-2 text-gray-900 font-semibold">
+                        Location Name*
+                      </label>
+                      <input
+                        type="text"
+                        name="locationName"
+                        placeholder="Enter Location Name"
+                        value={formData.locationName}
+                        onChange={handleChange}
+                        className="w-full border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:border-orange-500 transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block mb-2 text-gray-900 font-semibold">
+                        Latitude*
+                      </label>
+                      <input
+                        type="text"
+                        name="latitude"
+                        placeholder="Enter Latitude"
+                        value={formData.latitude}
+                        onChange={handleChange}
+                        className="w-full border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:border-orange-500 transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block mb-2 text-gray-900 font-semibold">
+                        Longitude*
+                      </label>
+                      <input
+                        type="text"
+                        name="longitude"
+                        placeholder="Enter Longitude"
+                        value={formData.longitude}
+                        onChange={handleChange}
+                        className="w-full border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:border-orange-500 transition"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (!navigator.geolocation) {
+                        alert("Geolocation is not supported by your browser");
+                        return;
+                      }
+
+                      navigator.geolocation.getCurrentPosition(
+                        async (position) => {
+                          const { latitude, longitude } = position.coords;
+                          setFormData((prev) => ({
+                            ...prev,
+                            latitude: latitude.toString(),
+                            longitude: longitude.toString(),
+                          }));
+
+                          // Reverse geocoding using OpenStreetMap
+                          try {
+                            const response = await fetch(
+                              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+                            );
+                            const data = await response.json();
+                            setFormData((prev) => ({
+                              ...prev,
+                              locationName: data.display_name || "",
+                            }));
+                          } catch (err) {
+                            console.error(
+                              "Failed to fetch location name:",
+                              err
+                            );
+                          }
+                        },
+                        (error) => {
+                          alert(
+                            "Could not fetch location. Please enter manually."
+                          );
+                          console.error(error);
+                        }
+                      );
+                    }}
+                    className="mt-2 bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition"
+                  >
+                    Fetch Current Location
+                  </button>
+                </div>
 
                 <div>
                   <label className="block mb-2 text-gray-900 font-semibold">
@@ -284,6 +456,31 @@ export default function InstituteSignup() {
                     className="w-full border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:border-orange-500 transition"
                   />
                 </div>
+              </div>
+              <div>
+                <label className="block mb-2 text-gray-900 font-semibold">
+                  Password*
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:border-orange-500 transition"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2 text-gray-900 font-semibold">
+                  Confirm Password*
+                </label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className="w-full border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:border-orange-500 transition"
+                />
               </div>
             </div>
           )}

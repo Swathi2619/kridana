@@ -15,12 +15,12 @@ const MartialArtsPage = () => {
   ];
 
   const handleViewTrainers = () => {
-    // Use correct route + category key
-    navigate("/viewTrainers?category=MartialArts");
+    // Pass Martial Arts filter via query param
+    navigate("/viewtrainers?category=MartialArts");
   };
 
   const handleViewInstitutes = () => {
-    navigate("/viewInstitutes?category=MartialArts");
+    navigate("/viewinstitutes?category=Martial Arts");
   };
 
   return (
@@ -31,7 +31,8 @@ const MartialArtsPage = () => {
           Unleash the Warrior Within
         </h2>
         <p className="text-gray-600 max-w-2xl mx-auto mb-10">
-          Build strength, discipline, and confidence through timeless martial arts training.
+          Build strength, discipline, and confidence through timeless martial
+          arts training.
         </p>
 
         {/* Hero Buttons */}
@@ -77,9 +78,7 @@ const MartialArtsPage = () => {
               <div className="w-20 h-20 bg-white rounded-lg mb-4" />
               <h4 className="text-xl font-semibold mb-4">{item}</h4>
               <button
-                onClick={() =>
-                  navigate(`/viewTrainers?category=${encodeURIComponent(item)}`)
-                }
+                onClick={() => navigate("/view-trainers?category=MartialArts")}
                 className="bg-white text-orange-600 px-5 py-2 rounded-full font-medium hover:bg-gray-100 transition"
               >
                 Select
@@ -104,7 +103,8 @@ const MartialArtsPage = () => {
               </div>
               <h4 className="font-bold text-lg mb-3">Find Your Trainers</h4>
               <p className="text-gray-600 mb-6">
-                Discover certified trainers tailored to your style and skill level.
+                Discover certified trainers tailored to your skill level and
+                goals.
               </p>
               <button
                 onClick={handleViewTrainers}
@@ -120,7 +120,7 @@ const MartialArtsPage = () => {
               </div>
               <h4 className="font-bold text-lg mb-3">Find Your Institutes</h4>
               <p className="text-gray-600 mb-6">
-                Explore top-rated dojos and academies with world-class facilities.
+                Explore top-rated institutes with world-class facilities.
               </p>
               <button
                 onClick={handleViewInstitutes}

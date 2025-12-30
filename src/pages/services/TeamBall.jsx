@@ -2,26 +2,26 @@ import React from "react";
 import { Search, Users, Building2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const IceSports = () => {
+const TeamBallPage = () => {
   const navigate = useNavigate();
 
   const categories = [
-    "Ice Skating",
-    "Figure Skating",
-    "Ice Hockey",
-    "Speed Skating",
-    "Short Track Skating",
-    "Ice Dancing",
-    "Curling",
-    "Synchronized Skating",
+    "Football",
+    "Hockey",
+    "Basketball",
+    "Handball",
+    "Rugby",
+    "American Football",
+    "Water Polo",
+    "Lacrosse",
   ];
 
   const handleViewTrainers = () => {
-    navigate("/viewTrainers?category=IceSports");
+    navigate("/viewTrainers?category=TeamBall");
   };
 
   const handleViewInstitutes = () => {
-    navigate("/viewInstitutes?category=IceSports");
+    navigate("/viewInstitutes?category=TeamBall");
   };
 
   return (
@@ -29,10 +29,11 @@ const IceSports = () => {
       {/* ================= HERO SECTION ================= */}
       <section className="max-w-7xl mx-auto px-6 py-20 text-center">
         <h2 className="text-4xl md:text-5xl font-extrabold mb-6">
-          Glide with Fearless Precision
+          Build Team Spirit
         </h2>
         <p className="text-gray-600 max-w-2xl mx-auto mb-10">
-          Build balance, power, and confidence through thrilling ice sports training.
+          Build teamwork, strategy, and resilience through the dynamic spirit of
+          teamball.
         </p>
 
         {/* Hero Buttons */}
@@ -63,10 +64,10 @@ const IceSports = () => {
         </div>
       </section>
 
-      {/* ================= ICE SPORTS CATEGORIES ================= */}
+      {/* ================= TEAM BALL CATEGORIES ================= */}
       <section className="max-w-7xl mx-auto px-6 py-16">
         <h3 className="text-3xl font-bold text-orange-600 mb-12 text-center">
-          Ice Sports
+          Team Ball Sports
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
@@ -95,7 +96,7 @@ const IceSports = () => {
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h3 className="text-3xl font-bold mb-4">How it Works</h3>
           <p className="text-gray-600 mb-12">
-            Get started with your ice sports journey in three simple steps.
+            Get started with your teamball journey in three simple steps.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -105,7 +106,7 @@ const IceSports = () => {
               </div>
               <h4 className="font-bold text-lg mb-3">Find Your Trainers</h4>
               <p className="text-gray-600 mb-6">
-                Connect with expert ice sports coaches for every discipline and level.
+                Discover certified coaches for your favorite teamball sport.
               </p>
               <button
                 onClick={handleViewTrainers}
@@ -121,7 +122,7 @@ const IceSports = () => {
               </div>
               <h4 className="font-bold text-lg mb-3">Find Your Institutes</h4>
               <p className="text-gray-600 mb-6">
-                Discover rinks and academies with professional ice training facilities.
+                Explore academies with professional training facilities.
               </p>
               <button
                 onClick={handleViewInstitutes}
@@ -137,7 +138,7 @@ const IceSports = () => {
               </div>
               <h4 className="font-bold text-lg mb-3">Start Training</h4>
               <p className="text-gray-600 mb-6">
-                Glide, spin, and sprint with confidence on the ice.
+                Join a team and elevate your game to championship level.
               </p>
               <button className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition">
                 Get Started
@@ -150,4 +151,4 @@ const IceSports = () => {
   );
 };
 
-export default IceSports;
+export default TeamBallPage;

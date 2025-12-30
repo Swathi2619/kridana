@@ -15,11 +15,11 @@ const Wellness = () => {
   ];
 
   const handleViewTrainers = () => {
-    navigate("/viewTrainers?category=Wellness");
+    navigate("/viewTrainers?category=Wellness");  // ✅ Same pattern
   };
 
   const handleViewInstitutes = () => {
-    navigate("/viewInstitutes?category=Wellness");
+    navigate("/viewInstitutes?category=Wellness"); // ✅ Same pattern
   };
 
   return (
@@ -64,7 +64,7 @@ const Wellness = () => {
       {/* ================= WELLNESS CATEGORIES ================= */}
       <section className="max-w-7xl mx-auto px-6 py-16">
         <h3 className="text-3xl font-bold text-orange-600 mb-12 text-center">
-          Wellness
+          Wellness Categories
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
@@ -77,7 +77,7 @@ const Wellness = () => {
               <h4 className="text-xl font-semibold mb-4">{item}</h4>
               <button
                 onClick={() =>
-                  navigate(`/viewTrainers?category=${encodeURIComponent(item)}`)
+                  navigate(`/viewTrainers?category=${encodeURIComponent(item)}`)  // ✅ Same pattern
                 }
                 className="bg-white text-orange-600 px-5 py-2 rounded-full font-medium hover:bg-gray-100 transition"
               >
@@ -106,7 +106,7 @@ const Wellness = () => {
                 Connect with experts in fitness, mindfulness, and lifestyle wellness.
               </p>
               <button
-                onClick={handleViewTrainers}
+                onClick={handleViewTrainers}  // ✅ Same pattern
                 className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition"
               >
                 View Trainers
@@ -122,7 +122,7 @@ const Wellness = () => {
                 Explore wellness studios, clinics, and holistic health centers near you.
               </p>
               <button
-                onClick={handleViewInstitutes}
+                onClick={handleViewInstitutes}  // ✅ Same pattern
                 className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition"
               >
                 View Institutes

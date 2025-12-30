@@ -2,26 +2,27 @@ import React from "react";
 import { Search, Users, Building2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const Adventure = () => {
+const TargetPrecisionPage = () => {
   const navigate = useNavigate();
 
   const categories = [
-    "Rock Climbing",
-    "Trekking",
-    "Camping",
-    "Kayaking",
-    "Paragliding",
-    "Surfing",
-    "Mountain Biking",
-    "Ziplining",
+    "Archery",
+    "Shooting",
+    "Darts",
+    "Bowling",
+    "Golf",
+    "Billiards",
+    "Bocce",
+    "Lawn",
   ];
 
   const handleViewTrainers = () => {
-    navigate("/viewTrainers?category=Adventure");
+    // Pass Martial Arts filter via query param
+    navigate("/viewtrainers?category=Target&Precision");
   };
 
   const handleViewInstitutes = () => {
-    navigate("/viewInstitutes?category=Adventure");
+    navigate("/viewinstitutes?category=Target&Precision");
   };
 
   return (
@@ -29,10 +30,11 @@ const Adventure = () => {
       {/* ================= HERO SECTION ================= */}
       <section className="max-w-7xl mx-auto px-6 py-20 text-center">
         <h2 className="text-4xl md:text-5xl font-extrabold mb-6">
-          Rise Beyond Limits
+          Forge Unshakable Focus
         </h2>
         <p className="text-gray-600 max-w-2xl mx-auto mb-10">
-          Develop courage, stamina, and unstoppable confidence with adventure sports training.
+          Sharpen accuracy, control, and mindset with target and precision
+          training
         </p>
 
         {/* Hero Buttons */}
@@ -63,10 +65,10 @@ const Adventure = () => {
         </div>
       </section>
 
-      {/* ================= ADVENTURE CATEGORIES ================= */}
+      {/* ================= MARTIAL ARTS CATEGORIES ================= */}
       <section className="max-w-7xl mx-auto px-6 py-16">
         <h3 className="text-3xl font-bold text-orange-600 mb-12 text-center">
-          Adventure & Outdoor Sports
+          Target & Precision Sports
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
@@ -78,9 +80,7 @@ const Adventure = () => {
               <div className="w-20 h-20 bg-white rounded-lg mb-4" />
               <h4 className="text-xl font-semibold mb-4">{item}</h4>
               <button
-                onClick={() =>
-                  navigate(`/viewTrainers?category=${encodeURIComponent(item)}`)
-                }
+                onClick={() => navigate("/view-trainers?category=MartialArts")}
                 className="bg-white text-orange-600 px-5 py-2 rounded-full font-medium hover:bg-gray-100 transition"
               >
                 Select
@@ -95,7 +95,8 @@ const Adventure = () => {
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h3 className="text-3xl font-bold mb-4">How it Works</h3>
           <p className="text-gray-600 mb-12">
-            Get started with your adventure journey in three simple steps.
+            Get started with your target & precision journey in three simple
+            steps.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -105,7 +106,8 @@ const Adventure = () => {
               </div>
               <h4 className="font-bold text-lg mb-3">Find Your Trainers</h4>
               <p className="text-gray-600 mb-6">
-                Discover certified adventure guides and instructors for every level.
+                Discover certified trainers tailored to your skill level and
+                goals.
               </p>
               <button
                 onClick={handleViewTrainers}
@@ -121,7 +123,7 @@ const Adventure = () => {
               </div>
               <h4 className="font-bold text-lg mb-3">Find Your Institutes</h4>
               <p className="text-gray-600 mb-6">
-                Explore adventure academies and outdoor centers with expert facilities.
+                Explore top-rated institutes with world-class facilities.
               </p>
               <button
                 onClick={handleViewInstitutes}
@@ -137,7 +139,8 @@ const Adventure = () => {
               </div>
               <h4 className="font-bold text-lg mb-3">Start Training</h4>
               <p className="text-gray-600 mb-6">
-                Step outside your comfort zone and experience the thrill of the outdoors.
+                Begin your target & precision journey and unlock your true
+                potential.
               </p>
               <button className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition">
                 Get Started
@@ -150,4 +153,4 @@ const Adventure = () => {
   );
 };
 
-export default Adventure;
+export default TargetPrecisionPage;

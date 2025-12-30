@@ -1,7 +1,11 @@
 // src/pages/TrainerSignup.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Trash2, Edit2 } from "lucide-react"; // npm install lucide-react
+import { Trash2, Edit2 } from "lucide-react"; // npm install lucide-react [web:28][web:37]
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { auth, db, storage } from "../firebase";
 
 export default function TrainerSignup() {
   const navigate = useNavigate();
@@ -13,18 +17,26 @@ export default function TrainerSignup() {
 
   const [formData, setFormData] = useState({
     // Step 1
+    locationName: "",
+    latitude: "",
+    longitude: "",
     trainerName: "",
     yearsExperience: "",
     phoneNumber: "",
     email: "",
     instituteName: "",
     certification: "",
+
+    password: "",
+    confirmPassword: "",
+
     // Step 2
     address: "",
     zipCode: "",
     city: "",
     state: "",
     websiteLink: "",
+
     // Step 3
     firstName: "",
     lastName: "",
@@ -57,15 +69,24 @@ export default function TrainerSignup() {
         !formData.phoneNumber ||
         !formData.email ||
         !formData.instituteName ||
-        !formData.certification
+        !formData.certification ||
+        !formData.password ||
+        !formData.confirmPassword
       ) {
         alert("Please fill all fields in Step 1");
         return false;
       }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-        alert("Please enter a valid email");
+
+      if (formData.password !== formData.confirmPassword) {
+        alert("Passwords do not match");
         return false;
       }
+
+      if (formData.password.length < 6) {
+        alert("Password must be at least 6 characters");
+        return false;
+      }
+
       return true;
     }
 
@@ -105,13 +126,64 @@ export default function TrainerSignup() {
     if (step > 1) setStep(step - 1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateStep()) return;
-    console.log("Trainer signup data:", { role, ...formData, profileImageFile });
-    alert("Trainer details saved!");
-    // redirect to trainers dashboard after successful signup
-    navigate("/trainers");
+
+    try {
+      // 1️⃣ Create trainer auth account
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+
+      const uid = userCredential.user.uid;
+
+      // 2️⃣ Upload profile image (if exists)
+      let profileImageUrl = "";
+      if (profileImageFile) {
+        const imageRef = ref(storage, `trainers/${uid}/profile.jpg`);
+        await uploadBytes(imageRef, profileImageFile);
+        profileImageUrl = await getDownloadURL(imageRef);
+      }
+
+      // 3️⃣ Save trainer profile
+      await setDoc(doc(db, "trainers", uid), {
+        role: "trainer",
+        status: "pending", // admin approval ready
+
+        trainerName: formData.trainerName,
+        yearsExperience: formData.yearsExperience,
+        phoneNumber: formData.phoneNumber,
+        email: formData.email,
+        instituteName: formData.instituteName,
+        certification: formData.certification,
+
+        address: formData.address,
+        zipCode: formData.zipCode,
+        city: formData.city,
+        state: formData.state,
+        websiteLink: formData.websiteLink || "",
+
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        designation: formData.designation,
+        measurements: formData.measurements,
+        locationName: formData.locationName,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
+
+        profileImageUrl,
+        createdAt: serverTimestamp(),
+      });
+
+      alert("Trainer registered successfully!");
+      navigate("/trainers");
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    }
   };
 
   const progressPercentage = (step / 3) * 100;
@@ -200,6 +272,102 @@ export default function TrainerSignup() {
                     className="w-full border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:border-orange-500 transition"
                   />
                 </div>
+                <div className="border border-gray-300 rounded-lg p-4 space-y-4 mt-4">
+                  <h3 className="text-lg font-bold text-gray-900 pb-2">
+                    Trainer Location
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block mb-2 text-gray-900 font-semibold">
+                        Location Name*
+                      </label>
+                      <input
+                        type="text"
+                        name="locationName"
+                        placeholder="Enter Location Name"
+                        value={formData.locationName}
+                        onChange={handleChange}
+                        className="w-full border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:border-orange-500 transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block mb-2 text-gray-900 font-semibold">
+                        Latitude*
+                      </label>
+                      <input
+                        type="text"
+                        name="latitude"
+                        placeholder="Enter Latitude"
+                        value={formData.latitude}
+                        onChange={handleChange}
+                        className="w-full border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:border-orange-500 transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block mb-2 text-gray-900 font-semibold">
+                        Longitude*
+                      </label>
+                      <input
+                        type="text"
+                        name="longitude"
+                        placeholder="Enter Longitude"
+                        value={formData.longitude}
+                        onChange={handleChange}
+                        className="w-full border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:border-orange-500 transition"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!navigator.geolocation) {
+                        alert("Geolocation is not supported by your browser");
+                        return;
+                      }
+
+                      navigator.geolocation.getCurrentPosition(
+                        async (position) => {
+                          const { latitude, longitude } = position.coords;
+                          setFormData((prev) => ({
+                            ...prev,
+                            latitude: latitude.toString(),
+                            longitude: longitude.toString(),
+                          }));
+
+                          // Reverse geocoding using OpenStreetMap
+                          try {
+                            const response = await fetch(
+                              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+                            );
+                            const data = await response.json();
+                            setFormData((prev) => ({
+                              ...prev,
+                              locationName: data.display_name || "",
+                            }));
+                          } catch (err) {
+                            console.error(
+                              "Failed to fetch location name:",
+                              err
+                            );
+                          }
+                        },
+                        (error) => {
+                          alert(
+                            "Could not fetch location. Please enter manually."
+                          );
+                          console.error(error);
+                        }
+                      );
+                    }}
+                    className="mt-2 bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition"
+                  >
+                    Fetch Current Location
+                  </button>
+                </div>
 
                 <div>
                   <label className="block mb-2 text-gray-900 font-semibold">
@@ -270,6 +438,31 @@ export default function TrainerSignup() {
                     className="w-full border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:border-orange-500 transition"
                   />
                 </div>
+              </div>
+              <div>
+                <label className="block mb-2 text-gray-900 font-semibold">
+                  Password*
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:border-orange-500 transition"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2 text-gray-900 font-semibold">
+                  Confirm Password*
+                </label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className="w-full border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:border-orange-500 transition"
+                />
               </div>
             </div>
           )}

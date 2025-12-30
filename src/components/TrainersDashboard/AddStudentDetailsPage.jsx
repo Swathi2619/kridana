@@ -1,104 +1,170 @@
-import React from "react";
+import React, { useState } from "react";
+import { db, auth } from "../../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  doc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+  serverTimestamp,
+} from "firebase/firestore";
 
 const AddStudentDetailsPage = () => {
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(false);
+
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    category: "",
+    joinedDate: "",
+    email: "",
+    phoneNumber: "",
+    feeAmount: "",
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Student details saved (demo only).");
+
+    const trainer = auth.currentUser;
+    if (!trainer) {
+      alert("Trainer not logged in");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const studentCredential = await createUserWithEmailAndPassword(
+        auth,
+        form.email,
+        "123456"
+      );
+
+      const studentUID = studentCredential.user.uid;
+
+      await setDoc(doc(db, "trainerstudents", studentUID), {
+        firstName: form.firstName,
+        lastName: form.lastName,
+        category: form.category,
+        joinedDate: form.joinedDate,
+        email: form.email,
+        phoneNumber: form.phoneNumber,
+        feeAmount: Number(form.feeAmount),
+        trainerUID: trainer.uid,
+        studentUID: studentUID,
+        role: "student",
+        createdAt: serverTimestamp(),
+      });
+
+      await updateDoc(doc(db, "trainers", trainer.uid), {
+        students: arrayUnion(studentUID),
+      });
+
+      alert("Student added successfully 🎉");
+
+      setForm({
+        firstName: "",
+        lastName: "",
+        category: "",
+        joinedDate: "",
+        email: "",
+        phoneNumber: "",
+        feeAmount: "",
+      });
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="h-full flex items-center justify-center bg-[#4b301b]">
-      <div className="w-full max-w-4xl bg-white text-black rounded-xl shadow-lg px-12 py-10 relative">
-        <button
-          type="button"
-          className="absolute top-5 right-6 text-2xl text-gray-500 hover:text-gray-700"
-        >
-          
-        </button>
-
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl md:text-3xl font-extrabold">
-            Add Student Details
-          </h1>
-          <button className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
-            <span>➕</span>
-            <span>Add</span>
-          </button>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-[#4b301b] dark:bg-gray-900 px-4">
+      <div className="w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl px-6 sm:px-10 py-8 sm:py-10 transition-colors">
+        <h1 className="text-2xl sm:text-3xl font-extrabold mb-8 text-gray-900 dark:text-white text-center sm:text-left">
+          Add Student Details
+        </h1>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-semibold mb-2">
-                First Name
-              </label>
-              <input
-                type="text"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold mb-2">
-                Last Name
-              </label>
-              <input
-                type="text"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
-              />
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <input
+              name="firstName"
+              placeholder="First Name"
+              value={form.firstName}
+              onChange={handleChange}
+              required
+              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-400 outline-none"
+            />
+            <input
+              name="lastName"
+              placeholder="Last Name"
+              value={form.lastName}
+              onChange={handleChange}
+              required
+              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-400 outline-none"
+            />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-semibold mb-2">
-                Category
-              </label>
-              <input
-                type="text"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold mb-2">
-                Joined Date
-              </label>
-              <div className="relative">
-                <input
-                  type="date"
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 pr-10 outline-none focus:ring-2 focus:ring-orange-400"
-                />
-              
-              </div>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <input
+              name="category"
+              placeholder="Category"
+              value={form.category}
+              onChange={handleChange}
+              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-400 outline-none"
+            />
+            <input
+              type="date"
+              name="joinedDate"
+              value={form.joinedDate}
+              onChange={handleChange}
+              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-400 outline-none"
+            />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-semibold mb-2">
-                E-mail
-              </label>
-              <input
-                type="email"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold mb-2">
-                Phone number
-              </label>
-              <input
-                type="tel"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
-              />
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <input
+              type="email"
+              name="email"
+              placeholder="E-mail"
+              value={form.email}
+              onChange={handleChange}
+              required
+              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-400 outline-none"
+            />
+            <input
+              name="phoneNumber"
+              placeholder="Phone Number"
+              value={form.phoneNumber}
+              onChange={handleChange}
+              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-400 outline-none"
+            />
           </div>
 
-          <div className="pt-4 flex justify-center">
+          <div>
+            <input
+              type="number"
+              name="feeAmount"
+              placeholder="Fee Amount"
+              value={form.feeAmount}
+              onChange={handleChange}
+              required
+              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-400 outline-none"
+            />
+          </div>
+
+          <div className="flex justify-center pt-6">
             <button
               type="submit"
-              className="bg-orange-500 text-white px-16 py-3 rounded-md text-lg font-extrabold"
+              disabled={loading}
+              className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-16 py-3 rounded-md font-extrabold transition disabled:opacity-60"
             >
-              Save
+              {loading ? "Saving..." : "Save"}
             </button>
           </div>
         </form>

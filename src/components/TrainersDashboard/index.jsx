@@ -1,3 +1,4 @@
+// src/components/TrainersDashboard/TrainersDashboard.jsx
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import TrainersTable from "./TrainersTable";
@@ -5,19 +6,19 @@ import StudentsAttendancePage from "./StudentsAttendancePage";
 import FeesDetailsPage from "./FeesDetailsPage";
 import AddStudentDetailsPage from "./AddStudentDetailsPage";
 import PaymentsPage from "./PaymentsPage";
-import ClassTime from "./ClassTime";
 import { Pagination } from "./shared";
-import MonthRangePicker from "../MonthRangePicker";
+import Editprofile from "./Editprofile";
+import ClassTime from "./ClassTime";  // ✅ ADDED CLASS TIMINGS
 
 const sidebarItems = [
   "Home",
   "Students Attendance",
+  "Class Timings",      // ✅ ADDED
   "Fees Details",
   "Add Student Details",
-  "Class Timings",
   "Inbox",
   "Shop",
-  "Edit Profile",
+  "Editprofile",
   "Categories",
   "Reports",
   "Payment Details",
@@ -34,9 +35,9 @@ const TrainersDashboard = () => {
   const [trainers, setTrainers] = useState(
     Array.from({ length: 8 }).map((_, i) => ({
       id: i + 1,
-      name: `Trainer ${i + 1}`,
+      name: `Students Name ${i + 1}`,
       batch: String(i + 1).padStart(2, "0"),
-      phone: "+91 99999 0000" + (i + 1),
+      phone: "+91",
     }))
   );
 
@@ -53,10 +54,12 @@ const TrainersDashboard = () => {
   const handleMenuClick = (item) => {
     setActiveMenu(item);
 
-    if (item === "Class Timings") {
-      setView("classTimings");
-    } else if (item === "Students Attendance") {
+    if (item === "Students Attendance") {
       setView("studentsAttendance");
+    } else if (item === "Class Timings") {  // ✅ ADDED CLASS TIMINGS
+      setView("classTimings");
+    } else if (item === "Editprofile") {
+      setView("Editprofile");
     } else if (item === "Fees Details") {
       setView("feesDetails");
     } else if (item === "Add Student Details") {
@@ -74,44 +77,23 @@ const TrainersDashboard = () => {
     }
   };
 
-  const handleRangeChange = (range) => {
-    console.log("TrainersDashboard range:", range);
-  };
-
-  // ---- Add Trainer button logic ----
-  const handleAddTrainer = () => {
-    setTrainers((prev) => {
-      const nextId = prev.length ? Math.max(...prev.map((t) => t.id)) + 1 : 1;
-      const nextBatch = String(prev.length + 1).padStart(2, "0");
-      return [
-        ...prev,
-        {
-          id: nextId,
-          name: `Trainer ${nextId}`,
-          batch: nextBatch,
-          phone: "+91 99999 0000" + nextId,
-        },
-      ];
-    });
-  };
-  // ----------------------------------
-
   const renderMainContent = () => {
-    if (view === "classTimings") return <ClassTime />;
+    if (view === "Editprofile") return <Editprofile />;
     if (view === "studentsAttendance") return <StudentsAttendancePage />;
+    if (view === "classTimings") return <ClassTime />;  // ✅ ADDED CLASS TIMINGS ROUTE
     if (view === "feesDetails") return <FeesDetailsPage />;
     if (view === "addStudent") return <AddStudentDetailsPage />;
     if (view === "paymentDetails") return <PaymentsPage />;
 
     return (
       <>
-        {/* top search + icons */}
+        {/* Search bar */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center bg-[#3b2615] border border-[#6b4a2d] rounded-full px-4 py-2 w-full max-w-md">
             <span className="mr-2 text-lg text-gray-300">🔍</span>
             <input
               type="text"
-              placeholder="Search trainers by name..."
+              placeholder="Search by name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="bg-transparent outline-none text-sm w-full placeholder:text-gray-400"
@@ -125,21 +107,18 @@ const TrainersDashboard = () => {
           </div>
         </div>
 
-        {/* header + date range + add */}
-        <div className="flex items-center justify-between mb-4 relative">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
           <h1 className="text-3xl font-extrabold text-orange-400">
             Trainers Data
           </h1>
 
           <div className="flex items-center gap-3">
-            <MonthRangePicker onChange={handleRangeChange} />
-            <button
-              type="button"
-              onClick={handleAddTrainer}
-              className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold"
-            >
-              <span>➕</span>
-              <span>Add Trainer</span>
+            <button className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
+              📅 Jan2026–Feb2026
+            </button>
+            <button className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
+              ➕ Add
             </button>
           </div>
         </div>
@@ -160,7 +139,7 @@ const TrainersDashboard = () => {
     <div className="min-h-screen flex bg-[#5a5a5a] text-white">
       {/* Sidebar */}
       <aside className="w-72 bg-orange-900 flex flex-col">
-        <div className="flex items-center gap-3 px-4 py-4 bg-orange-900 border-b border-orange-800">
+        <div className="flex items-center gap-3 px-4 py-4 border-b border-orange-800">
           <div className="w-10 h-10 rounded-full bg-orange-700" />
           <span className="text-xl font-extrabold text-white">
             Institute name
@@ -171,10 +150,9 @@ const TrainersDashboard = () => {
           {sidebarItems.map((item) => (
             <button
               key={item}
-              type="button"
               onClick={() => handleMenuClick(item)}
               className={
-                "w-full text-left px-4 py-3 border-b border-orange-200 cursor-pointer transition-colors " +
+                "w-full text-left px-4 py-3 border-b border-orange-200 transition-colors " +
                 (item === activeMenu
                   ? "bg-orange-500 text-white font-semibold"
                   : "hover:bg-orange-200")

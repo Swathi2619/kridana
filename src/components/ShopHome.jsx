@@ -1,17 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../contexts/CartContext";
-import { useWishlist } from "../contexts/WishlistContext";
+import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 
 const categories = [
-  { id: 1, title: "Upper Wear", image: "/upperwear.jpg" },
-  { id: 2, title: "Bottom Wear", image: "/bottomwear.jpg" },
-  { id: 3, title: "GYM", image: "/gym.jpg" },
-  { id: 4, title: "Head wear", image: "/headwear.jpg" },
-  { id: 5, title: "Sports Equipment", image: "/sportsequipment.jpg" },
-  { id: 6, title: "Sports Equipment", image: "/sportsequipment.jpg" },
-  { id: 7, title: "Sports Equipment", image: "/sportsequipment.jpg" },
-  { id: 8, title: "Sports Equipment", image: "/sportsequipment.jpg" },
+  { id: 1, title: "karate wear", image: "/Adidas karate.jpg", category: "karate-uniform" },
+  { id: 2, title: "Upper Wear", image: "/upperwear.jpg", category: "upper-wear" },
+  { id: 3, title: "Bottom Wear", image: "/bottomwear.jpg", category: "bottom-wear" },
+  { id: 4, title: "GYM", image: "/gym.jpg", category: "gym" },
+  { id: 5, title: "Head wear", image: "/headwear.jpg", category: "head-wear" },
+  { id: 6, title: "Sports Equipment", image: "/sportsequipment.jpg", category: "sports-equipment" },
 ];
 
 const recommended = [
@@ -51,6 +49,10 @@ const ShopHome = () => {
   const handleOpenGrid = () => navigate("/shop/products");
   const handleOpenWishlist = () => navigate("/wishlist");
 
+  const handleCategoryClick = (categoryId) => {
+    navigate(`/shop/products?category=${categoryId}`);
+  };
+
   const catRowRef = useRef(null);
   const firstCardRef = useRef(null);
   const [cardWidth, setCardWidth] = useState(220);
@@ -80,28 +82,27 @@ const ShopHome = () => {
           />
         </div>
 
+        {/* ✅ ICONS LIKE YOUR SCREENSHOT */}
         <div className="absolute top-4 right-4 flex items-center gap-3">
-          {/* wishlist button with badge */}
           <button
             onClick={handleOpenWishlist}
-            className="relative w-11 h-11 rounded-full bg-white/95 backdrop-blur-sm shadow-xl flex items-center justify-center text-orange-500 text-lg"
+            className="relative w-12 h-12 rounded-full bg-orange-50 border-2 border-orange-200 flex items-center justify-center text-orange-500 text-xl hover:bg-orange-100 hover:border-orange-300 transition-all duration-200 shadow-sm"
           >
             ♥
             {wishlistCount > 0 && (
-              <span className="absolute -top-1 -right-1 h-5 min-w-[1.25rem] px-1 bg-red-500 text-white text-[10px] leading-none rounded-full flex items-center justify-center font-bold shadow">
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                 {wishlistCount}
               </span>
             )}
           </button>
 
-          {/* cart with badge */}
           <button
             onClick={handleViewCart}
-            className="relative w-14 h-14 rounded-2xl bg-white/95 backdrop-blur-sm shadow-xl flex items-center justify-center text-orange-500 text-2xl hover:bg-white transition-all duration-200"
+            className="relative w-14 h-14 rounded-2xl bg-orange-50 border-2 border-orange-200 flex items-center justify-center text-orange-500 text-2xl hover:bg-orange-100 hover:border-orange-300 transition-all duration-200 shadow-sm"
           >
             🛒
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 h-5 min-w-[1.25rem] px-1 bg-red-500 text-white text-[10px] leading-none rounded-full flex items-center justify-center font-bold shadow">
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                 {cartCount}
               </span>
             )}
@@ -109,13 +110,13 @@ const ShopHome = () => {
         </div>
       </div>
 
-      {/* categories */}
+      {/* categories - ONLY TEXT COLOR CHANGE ON HOVER */}
       <section className="w-full px-4 mt-6">
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={() => scrollCategories("left")}
-            className="hidden sm:flex w-8 h-8 rounded-full bg-gray-100 text-gray-600 items-center justify-center shadow hover:bg-gray-200"
+            className="hidden sm:flex w-8 h-8 rounded-full bg-gray-100 text-gray-600 items-center justify-center shadow hover:bg-orange-400 hover:text-white transition-all duration-200"
           >
             ‹
           </button>
@@ -128,15 +129,16 @@ const ShopHome = () => {
               <button
                 key={cat.id}
                 ref={idx === 0 ? firstCardRef : null}
-                className="relative w-52 h-20 rounded-xl overflow-hidden shadow-md bg-black flex-shrink-0 group"
+                onClick={() => handleCategoryClick(cat.category)}
+                className="relative w-52 h-20 rounded-xl overflow-hidden shadow-md bg-black flex-shrink-0 group cursor-pointer"
+                title={`Shop ${cat.title}`}
               >
                 <img
                   src={cat.image}
                   alt={cat.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
-                <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-lg">
+                <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-lg group-hover:text-orange-400 transition-colors duration-300">
                   {cat.title}
                 </span>
               </button>
@@ -146,7 +148,7 @@ const ShopHome = () => {
           <button
             type="button"
             onClick={() => scrollCategories("right")}
-            className="hidden sm:flex w-8 h-8 rounded-full bg-gray-100 text-gray-600 items-center justify-center shadow hover:bg-gray-200"
+            className="hidden sm:flex w-8 h-8 rounded-full bg-gray-100 text-gray-600 items-center justify-center shadow hover:bg-orange-400 hover:text-white transition-all duration-200"
           >
             ›
           </button>
@@ -230,7 +232,7 @@ const RecommendedCard = ({ item, onOpenGrid }) => {
           </h3>
           <button
             onClick={onOpenGrid}
-            className="h-9 w-9 rounded-full border-2 border-orange-400 text-orange-400 flex items-center justify-center text-xl leading-none"
+            className="h-9 w-9 rounded-full border-2 border-orange-400 text-orange-400 flex items-center justify-center text-xl leading-none hover:bg-orange-50 transition-colors"
           >
             →
           </button>

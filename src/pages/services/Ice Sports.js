@@ -2,23 +2,26 @@ import React from "react";
 import { Search, Users, Building2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const Fitness = () => {
+const IceSports = () => {
   const navigate = useNavigate();
 
   const categories = [
-    "Strength / Muscular Fitness",
-    "Muscular Endurance",
-    "Flexibility Fitness",
-    "Balance & Stability",
-    "Skill / Performance Fitness",
+    "Ice Skating",
+    "Figure Skating",
+    "Ice Hockey",
+    "Speed Skating",
+    "Short Track Skating",
+    "Ice Dancing",
+    "Curling",
+    "Synchronized Skating",
   ];
 
   const handleViewTrainers = () => {
-    navigate("/viewTrainers?category=Fitness");
+    navigate("/viewTrainers?category=IceSports");
   };
 
   const handleViewInstitutes = () => {
-    navigate("/viewInstitutes?category=Fitness");
+    navigate("/viewInstitutes?category=IceSports");
   };
 
   return (
@@ -26,10 +29,11 @@ const Fitness = () => {
       {/* ================= HERO SECTION ================= */}
       <section className="max-w-7xl mx-auto px-6 py-20 text-center">
         <h2 className="text-4xl md:text-5xl font-extrabold mb-6">
-          Elevate Your Fitness
+          Glide with Fearless Precision
         </h2>
         <p className="text-gray-600 max-w-2xl mx-auto mb-10">
-          Boost endurance, power, and discipline through smart, personalized fitness workouts.
+          Build balance, power, and confidence through thrilling ice sports
+          training.
         </p>
 
         {/* Hero Buttons */}
@@ -60,10 +64,10 @@ const Fitness = () => {
         </div>
       </section>
 
-      {/* ================= FITNESS CATEGORIES ================= */}
+      {/* ================= ICE SPORTS CATEGORIES ================= */}
       <section className="max-w-7xl mx-auto px-6 py-16">
         <h3 className="text-3xl font-bold text-orange-600 mb-12 text-center">
-          Fitness
+          Ice Sports
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
@@ -92,7 +96,7 @@ const Fitness = () => {
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h3 className="text-3xl font-bold mb-4">How it Works</h3>
           <p className="text-gray-600 mb-12">
-            Get started with your fitness journey in three simple steps.
+            Get started with your ice sports journey in three simple steps.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -102,7 +106,8 @@ const Fitness = () => {
               </div>
               <h4 className="font-bold text-lg mb-3">Find Your Trainers</h4>
               <p className="text-gray-600 mb-6">
-                Discover certified trainers who match your fitness goals and level.
+                Connect with expert ice sports coaches for every discipline and
+                level.
               </p>
               <button
                 onClick={handleViewTrainers}
@@ -118,7 +123,8 @@ const Fitness = () => {
               </div>
               <h4 className="font-bold text-lg mb-3">Find Your Institutes</h4>
               <p className="text-gray-600 mb-6">
-                Explore academies with expert fitness coaches and modern facilities.
+                Discover rinks and academies with professional ice training
+                facilities.
               </p>
               <button
                 onClick={handleViewInstitutes}
@@ -134,7 +140,7 @@ const Fitness = () => {
               </div>
               <h4 className="font-bold text-lg mb-3">Start Training</h4>
               <p className="text-gray-600 mb-6">
-                Build a stronger, healthier body with focused fitness training.
+                Glide, spin, and sprint with confidence on the ice.
               </p>
               <button className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition">
                 Get Started
@@ -147,4 +153,4 @@ const Fitness = () => {
   );
 };
 
-export default Fitness;
+export default IceSports;

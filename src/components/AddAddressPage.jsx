@@ -1,14 +1,19 @@
 // src/components/AddAddressPage.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../contexts/CartContext";
+import { useCart } from "../context/CartContext";
+
+const IMAGE_MAP = {
+  201: "/kumite kit.jpg",
+  202: "/Adidas karate.jpg",
+  203: "/Aarwaza karate.jpg",
+};
 
 const AddAddressPage = () => {
   const { cartItems, total } = useCart();
   const navigate = useNavigate();
   const grandTotal = total;
 
-  // Form state
   const [formData, setFormData] = useState({
     email: "",
     fullName: "",
@@ -28,13 +33,11 @@ const AddAddressPage = () => {
   };
 
   const handleContinueToPayment = () => {
-    // Basic validation
     if (!formData.fullName || !formData.address || !formData.city || !formData.state) {
       alert("Please fill in all required fields (Name, Address, City, State)");
       return;
     }
 
-    // Format address for PaymentPage
     const formattedAddress = [
       formData.fullName,
       formData.address,
@@ -42,37 +45,35 @@ const AddAddressPage = () => {
       `${formData.city}, ${formData.state} ${formData.zip}`,
       `Phone: ${formData.phone}`
     ]
-    .filter(line => line.trim()) // Remove empty lines
+    .filter(line => line.trim())
     .join("\n");
 
-    // Navigate with address state
     navigate("/Payment", { state: { address: formattedAddress } });
   };
 
-  const handleBackToCart = () => {
-    navigate("/cart");
-  };
+  const handleBackToCart = () => navigate("/cart");
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      {/* bigger card */}
+      
       <div className="w-full max-w-7xl bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
-        {/* header with equal horizontal padding */}
+        
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
           <h1 className="text-lg font-semibold text-gray-900">
             Delivery Address
           </h1>
           <span className="text-xs text-gray-500">
-            Step 1 of 2 · Address &amp; Order Summary
+            Step 1 of 2 · Address & Order Summary
           </span>
         </div>
 
-        {/* main content with equal padding on all sides */}
         <div className="p-6">
           <div className="flex flex-col md:flex-row gap-6">
-            {/* Address form */}
+            
+            {/* ================= ADDRESS FORM ================= */}
             <section className="flex-[0.6] text-[13px] border border-gray-200 rounded-lg p-4">
               <p className="text-orange-500 font-semibold mb-1">Contact</p>
+              
               <input
                 type="email"
                 name="email"
@@ -112,6 +113,7 @@ const AddAddressPage = () => {
                 className="w-full h-9 border border-gray-300 rounded px-3 text-xs mb-2.5"
                 required
               />
+
               <input
                 name="apartment"
                 value={formData.apartment}
@@ -163,7 +165,7 @@ const AddAddressPage = () => {
               </div>
             </section>
 
-            {/* Order Summary */}
+            {/* ================= ORDER SUMMARY WITH SIZE ================= */}
             <aside className="flex-[0.4] text-[12px] border border-gray-200 rounded-lg p-4 bg-gray-50">
               <h3 className="text-orange-500 font-semibold mb-2.5">
                 Order Summary
@@ -177,18 +179,31 @@ const AddAddressPage = () => {
                 <div className="space-y-3 mb-3 max-h-56 overflow-y-auto pr-1">
                   {cartItems.map((item) => (
                     <div className="flex items-center gap-3" key={item.id}>
-                      <div className="w-9 h-9 bg-gray-200 rounded flex items-center justify-center text-[10px] text-gray-500">
-                        {item.name.slice(0, 2)}
+                      
+                      {/* IMAGE */}
+                      <div className="w-10 h-10 bg-gray-200 overflow-hidden rounded">
+                        <img
+                          src={IMAGE_MAP[item.id] || "/placeholder.jpg"}
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <div className="flex-1 leading-tight">
+
+                      <div className="flex-1 leading-tight min-w-0">
                         <p className="text-[11px] font-semibold truncate">
                           {item.name}
                         </p>
+                        {/* ✅ SIZE - SAME GRAY COLOR AS QTY [file:9] */}
+                        {item.selectedSize && (
+                          <p className="text-[11px] text-gray-500">
+                            Size: {item.selectedSize}
+                          </p>
+                        )}
                         <p className="text-[11px] text-gray-500">
-                          Qty {item.qty} · ₹{" "}
-                          {item.price.toLocaleString("en-IN")}
+                          Qty {item.qty} · ₹ {item.price.toLocaleString("en-IN")}
                         </p>
                       </div>
+
                       <span className="text-[11px] font-semibold">
                         ₹ {(item.price * item.qty).toLocaleString("en-IN")}
                       </span>
@@ -221,15 +236,14 @@ const AddAddressPage = () => {
                 </div>
 
                 <div className="flex items-center justify-between border-t border-gray-200 pt-2 mt-1">
-                  <span className="font-semibold text-[12px]">
-                    Grand Total
-                  </span>
+                  <span className="font-semibold text-[12px]">Grand Total</span>
                   <span className="font-semibold text-[12px]">
                     ₹ {grandTotal.toLocaleString("en-IN")}
                   </span>
                 </div>
               </div>
             </aside>
+
           </div>
         </div>
       </div>

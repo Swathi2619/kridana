@@ -1,28 +1,27 @@
-// src/Equestrian.jsx
 import React from "react";
 import { Search, Users, Building2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const Equestrian = () => {
+const Adventure = () => {
   const navigate = useNavigate();
 
   const categories = [
-    "Dressage",
-    "Show Jumping",
-    "Eventing",
-    "Cross Country",
-    "Endurance Riding",
-    "Polo",
-    "Horse Racing",
-    "Para-Equestrian",
+    "Rock Climbing",
+    "Trekking",
+    "Camping",
+    "Kayaking",
+    "Paragliding",
+    "Surfing",
+    "Mountain Biking",
+    "Ziplining",
   ];
 
   const handleViewTrainers = () => {
-    navigate("/viewTrainers?category=Equestrian");
+    navigate("/viewTrainers?category=Adventure");  // ✅ Same pattern
   };
 
   const handleViewInstitutes = () => {
-    navigate("/viewInstitutes?category=Equestrian");
+    navigate("/viewInstitutes?category=Adventure"); // ✅ Same pattern
   };
 
   return (
@@ -30,10 +29,10 @@ const Equestrian = () => {
       {/* ================= HERO SECTION ================= */}
       <section className="max-w-7xl mx-auto px-6 py-20 text-center">
         <h2 className="text-4xl md:text-5xl font-extrabold mb-6">
-          Ride with Unbreakable Courage
+          Rise Beyond Limits
         </h2>
         <p className="text-gray-600 max-w-2xl mx-auto mb-10">
-          Develop strength, grace, and confidence through world-class equestrian training.
+          Develop courage, stamina, and unstoppable confidence with adventure sports training.
         </p>
 
         {/* Hero Buttons */}
@@ -64,10 +63,10 @@ const Equestrian = () => {
         </div>
       </section>
 
-      {/* ================= EQUESTRIAN CATEGORIES ================= */}
+      {/* ================= ADVENTURE CATEGORIES ================= */}
       <section className="max-w-7xl mx-auto px-6 py-16">
         <h3 className="text-3xl font-bold text-orange-600 mb-12 text-center">
-          Equestrian Sports
+          Adventure Categories
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
@@ -80,7 +79,7 @@ const Equestrian = () => {
               <h4 className="text-xl font-semibold mb-4">{item}</h4>
               <button
                 onClick={() =>
-                  navigate(`/viewTrainers?category=${encodeURIComponent(item)}`)
+                  navigate(`/viewTrainers?category=${encodeURIComponent(item)}`)  // ✅ Same pattern
                 }
                 className="bg-white text-orange-600 px-5 py-2 rounded-full font-medium hover:bg-gray-100 transition"
               >
@@ -96,7 +95,7 @@ const Equestrian = () => {
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h3 className="text-3xl font-bold mb-4">How it Works</h3>
           <p className="text-gray-600 mb-12">
-            Get started with your equestrian journey in three simple steps.
+            Get started with your adventure journey in three simple steps.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -106,10 +105,10 @@ const Equestrian = () => {
               </div>
               <h4 className="font-bold text-lg mb-3">Find Your Trainers</h4>
               <p className="text-gray-600 mb-6">
-                Discover expert equestrian coaches for every discipline and level.
+                Discover certified adventure guides and instructors for every level.
               </p>
               <button
-                onClick={handleViewTrainers}
+                onClick={handleViewTrainers}  // ✅ Same pattern
                 className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition"
               >
                 View Trainers
@@ -122,10 +121,10 @@ const Equestrian = () => {
               </div>
               <h4 className="font-bold text-lg mb-3">Find Your Institutes</h4>
               <p className="text-gray-600 mb-6">
-                Explore stables and riding academies with safe, professional facilities.
+                Explore adventure academies and outdoor centers with expert facilities.
               </p>
               <button
-                onClick={handleViewInstitutes}
+                onClick={handleViewInstitutes}  // ✅ Same pattern
                 className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition"
               >
                 View Institutes
@@ -138,7 +137,7 @@ const Equestrian = () => {
               </div>
               <h4 className="font-bold text-lg mb-3">Start Training</h4>
               <p className="text-gray-600 mb-6">
-                Build trust with your horse and grow as a confident, skilled rider.
+                Step outside your comfort zone and experience the thrill of the outdoors.
               </p>
               <button className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition">
                 Get Started
@@ -151,4 +150,4 @@ const Equestrian = () => {
   );
 };
 
-export default Equestrian;
+export default Adventure;
