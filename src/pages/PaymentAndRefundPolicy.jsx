@@ -1,9 +1,16 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 const PaymentAndRefundPolicy = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4 md:px-10">
       <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-2xl p-6 md:p-10">
+         <button
+          onClick={() => navigate("/privacy")}
+          className="text-blue-600 underline mb-6"
+        >
+          ← Back to Policies
+        </button>
         {/* Header */}
         <div className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-orange-500">
