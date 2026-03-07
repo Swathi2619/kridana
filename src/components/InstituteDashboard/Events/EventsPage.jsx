@@ -13,8 +13,9 @@ import PricingPayments from "./steps/PricingPayments";
 import OperationsManagement from "./steps/OperationsManagement";
 import VisibilityPromotion from "./steps/VisibilityPromotion";
 import EventAnalytics from "./steps/EventAnalytics";
+import EditEventDetails from "./steps/EditEventDetails";
 
-const EventsPage = () => {
+const EventsPage = ({ setActiveMenu }) => {
   const { user } = useAuth();
 
   const [step, setStep] = useState(1);
@@ -70,7 +71,7 @@ const EventsPage = () => {
         { merge: true }
       );
 
-      if (step < 8) {
+      if (step < 9) {
         setStep((prev) => prev + 1);
       }
     } catch (error) {
@@ -104,6 +105,14 @@ const EventsPage = () => {
         return <VisibilityPromotion formData={formData} setFormData={setFormData} />;
       case 8:
         return <EventAnalytics formData={formData} />;
+        case 9:
+ return (
+  <EditEventDetails
+    formData={formData}
+    setFormData={setFormData}
+    setActiveMenu={setActiveMenu}
+  />
+);
       default:
         return null;
     }
@@ -165,7 +174,7 @@ const EventsPage = () => {
           {renderStep()}
 
          {/* Bottom Buttons */}
-{![ 8].includes(step) && (
+{![9].includes(step) && (
   <div className="flex flex-col sm:flex-row justify-end gap-4 mt-10">
               <button
                 onClick={saveDraft}

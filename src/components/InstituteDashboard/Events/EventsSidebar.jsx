@@ -9,6 +9,7 @@ const steps = [
   "Operations Management",
   "Visibility & Promotion",
   "Event Analytics",
+  "Edit Event Details"
 ];
 
 const EventsSidebar = ({ step, setStep }) => {

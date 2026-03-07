@@ -171,8 +171,8 @@ const InstituteDashboard = () => {
         return <AddTrainerDetailsPage />;
       case "Customer Details":
         return <AddStudentDetailsPage />;
-      case "Add Events":
-        return <EventsPage />;
+     case "Add Events":
+  return <EventsPage setActiveMenu={setActiveMenu} />;
       case "Sell Sports Material":
         return <SellSportsMaterial setActiveMenu={setActiveMenu} />;
       case "Upload Product Details":
