@@ -374,25 +374,7 @@ const TrainersDashboard = () => {
       >
         {/* ===== INSTITUTE CARD ===== */}
         <div className="bg-black rounded-xl px-4 py-3 flex items-center gap-4 mb-3">
-          {/* PROFILE IMAGE */}
-          <div className="flex-shrink-0">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border-2 border-orange-400 shadow-md">
-              {trainerData?.profileImageUrl ? (
-                <img
-                  src={trainerData.profileImageUrl}
-                  alt="profile"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-                  <span className="text-orange-400 font-bold text-lg sm:text-xl">
-                    {trainerData?.instituteName?.charAt(0)?.toUpperCase() ||
-                      "I"}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
+
 
           {/* INSTITUTE NAME */}
           <div className="flex-1 min-w-0">

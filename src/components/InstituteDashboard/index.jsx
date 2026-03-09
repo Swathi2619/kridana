@@ -241,17 +241,7 @@ const InstituteDashboard = () => {
       <aside className="w-72 bg-gray-700 p-3 overflow-y-auto">
         {/* ===== INSTITUTE CARD ===== */}
         <div className="bg-black rounded-xl p-4 flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-300 flex items-center justify-center text-black font-bold">
-            {institute?.profileImageUrl ? (
-              <img
-                src={institute.profileImageUrl}
-                alt="Institute"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              institute?.name?.charAt(0)?.toUpperCase() || "I"
-            )}
-          </div>
+
 
           <span className="text-orange-500 font-bold text-lg">
             {institute?.instituteName || "Institute name"}

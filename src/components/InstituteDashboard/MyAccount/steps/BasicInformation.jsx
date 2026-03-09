@@ -22,7 +22,7 @@ const BasicInformation = () => {
 
   const [errors, setErrors] = useState({});
   const [categoryData, setCategoryData] = useState([
-    { category: "", subCategories: [] },
+    { category: "", subCategories: [], confirmed: false },
   ]);
   const categories = [
     "Martial Arts",
@@ -373,27 +373,19 @@ const BasicInformation = () => {
     fetchData();
   }, [user]);
   // ✅ HANDLE CHANGE
-// ✅ HANDLE CHANGE
-const handleChange = (e) => {
-  const { name, value } = e.target;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-  let newValue = value;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
-  // allow only alphabets for specific fields
-  if (["institutionName", "headCoach", "type"].includes(name)) {
-    newValue = value.replace(/[^A-Za-z ]/g, "");
-  }
-
-  setFormData((prev) => ({
-    ...prev,
-    [name]: newValue,
-  }));
-
-  setErrors((prev) => ({
-    ...prev,
-    [name]: "",
-  }));
-};
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  };
 
   // ✅ VALIDATION
   const validate = () => {
@@ -444,7 +436,7 @@ const handleChange = (e) => {
   };
   const handleCategoryChange = (index, value) => {
     const updated = [...categoryData];
-    updated[index] = { category: value, subCategories: [] };
+    updated[index] = { category: value, subCategories: [], confirmed: false };
     setCategoryData(updated);
   };
 
@@ -462,7 +454,10 @@ const handleChange = (e) => {
   };
 
   const addCategoryBlock = () => {
-    setCategoryData((prev) => [...prev, { category: "", subCategories: [] }]);
+    setCategoryData((prev) => [
+      ...prev,
+      { category: "", subCategories: [], confirmed: false },
+    ]);
   };
 
   const removeCategoryBlock = (index) => {
@@ -547,8 +542,7 @@ const handleChange = (e) => {
   };
 
   const inputClass = (field) =>
-    `border ${
-      errors[field] ? "border-red-500" : "border-gray-300"
+    `border ${errors[field] ? "border-red-500" : "border-gray-300"
     } rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500`;
 
   return (
@@ -621,20 +615,51 @@ const handleChange = (e) => {
               </div>
 
               {/* Sub Categories */}
-              {block.category && (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                  {subCategoryMap[block.category]?.map((sub) => (
-                    <label
-                      key={sub}
-                      className="flex items-center gap-2 text-sm"
+              {block.category && !block.confirmed && (
+                <>
+                  {/* Sub Categories */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                    {subCategoryMap[block.category]?.map((sub) => (
+                      <label key={sub} className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={block.subCategories.includes(sub)}
+                          onChange={() => handleSubCategoryToggle(index, sub)}
+                        />
+                        {sub}
+                      </label>
+                    ))}
+                  </div>
+
+                  {/* OK Button */}
+                  <div className="flex justify-end mt-3">
+                    <button
+                      type="button"
+                      disabled={block.subCategories.length === 0}
+                      onClick={() => {
+                        const updated = [...categoryData];
+                        updated[index].confirmed = true;
+                        setCategoryData(updated);
+                      }}
+                      className={`px-4 py-1 rounded text-white text-sm ${block.subCategories.length === 0
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-orange-500 hover:bg-orange-600"
+                        }`}
                     >
-                      <input
-                        type="checkbox"
-                        checked={block.subCategories.includes(sub)}
-                        onChange={() => handleSubCategoryToggle(index, sub)}
-                      />
+                      OK
+                    </button>
+                  </div>
+                </>
+              )}
+              {block.confirmed && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {block.subCategories.map((sub) => (
+                    <span
+                      key={sub}
+                      className="bg-orange-100 text-orange-700 px-2 py-1 rounded text-sm"
+                    >
                       {sub}
-                    </label>
+                    </span>
                   ))}
                 </div>
               )}

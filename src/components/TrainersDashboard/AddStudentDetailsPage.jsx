@@ -353,6 +353,7 @@ export default function AddTrainerDetailsPage() {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
+      gender: "",
     dateOfBirth: "",
     age: "",
     joiningDate: "",
@@ -410,8 +411,6 @@ export default function AddTrainerDetailsPage() {
       if (!formData.dateOfBirth)
         newErrors.dateOfBirth = "Date of Birth is required";
 
-      if (!formData.age) newErrors.age = "Age is required";
-
       if (!formData.joiningDate)
         newErrors.joiningDate = "Joining date is required";
 
@@ -436,11 +435,13 @@ export default function AddTrainerDetailsPage() {
 
       /* FORMAT CHECKS */
 
-      if (formData.firstName && !/^[A-Za-z]+$/.test(formData.firstName))
-        newErrors.firstName = "Only alphabets allowed";
+if (!/^[A-Za-z.\s]+$/.test(formData.firstName))
+  newErrors.firstName =
+    "First name can only contain letters, spaces, and dots";
 
-      if (formData.lastName && !/^[A-Za-z]+$/.test(formData.lastName))
-        newErrors.lastName = "Only alphabets allowed";
+if (!/^[A-Za-z.\s]+$/.test(formData.lastName))
+  newErrors.lastName =
+    "Last name can only contain letters, spaces, and dots";
 
       if (formData.phone && !/^[0-9]{10}$/.test(formData.phone))
         newErrors.phone = "Phone must be 10 digits";
@@ -742,7 +743,8 @@ export default function AddTrainerDetailsPage() {
                 className={inputClass}
                 value={formData.firstName}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/[^A-Za-z]/g, "");
+                  
+                const value = e.target.value.replace(/[^A-Za-z.\s]/g, "");
                   setFormData((prev) => ({ ...prev, firstName: value }));
                 }}
               />
@@ -761,7 +763,7 @@ export default function AddTrainerDetailsPage() {
                 className={inputClass}
                 value={formData.lastName}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/[^A-Za-z]/g, "");
+                  const value = e.target.value.replace(/[^A-Za-z.\s]/g, "");
                   setFormData((prev) => ({ ...prev, lastName: value }));
                 }}
               />
@@ -771,6 +773,31 @@ export default function AddTrainerDetailsPage() {
                 </span>
               )}
             </div>
+            <div className="flex flex-col">
+  <label className="text-sm font-semibold mb-2">
+    Gender<span className="text-red-500">*</span>
+  </label>
+
+  <select
+    className={inputClass}
+    value={formData.gender}
+    onChange={(e) =>
+      setFormData((prev) => ({
+        ...prev,
+        gender: e.target.value,
+      }))
+    }
+  >
+    <option value="">Select Gender</option>
+    <option>Male</option>
+    <option>Female</option>
+    <option>Others</option>
+  </select>
+
+  {errors.gender && (
+    <span className="text-red-500 text-xs mt-1">{errors.gender}</span>
+  )}
+</div>
 
             {/* Row 2 */}
             <div className="flex flex-col">
@@ -783,12 +810,28 @@ export default function AddTrainerDetailsPage() {
                 min="1900-01-01"
                 max={new Date().toISOString().split("T")[0]}
                 value={formData.dateOfBirth}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    dateOfBirth: e.target.value,
-                  }))
-                }
+onChange={(e) => {
+  const dob = e.target.value;
+
+  const birthDate = new Date(dob);
+  const today = new Date();
+
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+
+  if (
+    monthDiff < 0 ||
+    (monthDiff === 0 && today.getDate() < birthDate.getDate())
+  ) {
+    age--;
+  }
+
+  setFormData((prev) => ({
+    ...prev,
+    dateOfBirth: dob,
+    age: age,
+  }));
+}}
               />
               {errors.dateOfBirth && (
                 <span className="text-red-500 text-xs mt-1">
@@ -798,25 +841,19 @@ export default function AddTrainerDetailsPage() {
             </div>
 
             <div className="flex flex-col">
-              <label className="text-sm font-semibold mb-2">Age*</label>
-              <select
-                className={inputClass}
-                value={formData.age}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, age: e.target.value }))
-                }
-              >
-                <option value="">Select Age</option>
-                <option>01 – 10 years Kids</option>
-                <option>11 – 20 years Teenage</option>
-                <option>21 – 45 years Adults</option>
-                <option>45 – 60 years Middle Age</option>
-                <option>61 – 100 years Senior Citizens</option>
-              </select>
-              {errors.age && (
+  <label className="text-sm font-semibold mb-2">Age</label>
+
+  <input
+    type="text"
+    className={inputClass}
+    value={formData.age}
+    readOnly
+    placeholder="Auto calculated from DOB"
+  />
+  {errors.age && (
                 <span className="text-red-500 text-xs">{errors.age}</span>
               )}
-            </div>
+</div>
 
             {/* Row 3 */}
             <div className="flex flex-col">
@@ -1142,36 +1179,39 @@ export default function AddTrainerDetailsPage() {
                 </span>
               )}
             </div>
-            <div className="flex flex-col">
-              <label className="text-sm font-semibold mb-2">
-                Monthly Payment Date*
-              </label>
-              <input
-                type="date"
-                className={inputClass}
-                min={new Date().toISOString().split("T")[0]}
-                max="9999-12-31"
-                value={formData.monthlyDate}
-                onChange={(e) => {
-                  const value = e.target.value;
+                         <div className="flex flex-col">
+                <label className="text-sm font-semibold mb-2">
+                  Monthly Payment Date* (1 - 31)
+                </label>
 
-                  // Extra safety: ensure valid 4-digit year format
-                  const year = value.split("-")[0];
+                <input
+                  type="number"
+                  min={1}
+                  max={31}
+                  className={inputClass}
+                  value={formData.monthlyDate}
+                  placeholder="Enter day (e.g., 5)"
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, "");
 
-                  if (year.length <= 4) {
-                    setFormData((prev) => ({
-                      ...prev,
-                      monthlyDate: value,
-                    }));
-                  }
-                }}
-              />
-              {errors.monthlyDate && (
-                <span className="text-red-500 text-xs mt-1">
-                  {errors.monthlyDate}
-                </span>
-              )}
-            </div>
+                    if (
+                      value === "" ||
+                      (Number(value) >= 1 && Number(value) <= 31)
+                    ) {
+                      setFormData((prev) => ({
+                        ...prev,
+                        monthlyDate: value,
+                      }));
+                    }
+                  }}
+                />
+
+                {errors.monthlyDate && (
+                  <span className="text-red-500 text-xs mt-1">
+                    {errors.monthlyDate}
+                  </span>
+                )}
+              </div>
             <div className="flex flex-col">
               <label className="text-sm font-semibold mb-2">
                 Aadhaar Front & Back Photos (Optional)

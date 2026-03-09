@@ -711,9 +711,8 @@ export default function AddTrainerDetailsPage() {
               {[1, 2].map((s) => (
                 <div
                   key={s}
-                  className={`h-3 flex-1 rounded-full ${
-                    step >= s ? "bg-orange-500" : "bg-gray-300"
-                  }`}
+                  className={`h-3 flex-1 rounded-full ${step >= s ? "bg-orange-500" : "bg-gray-300"
+                    }`}
                 />
               ))}
             </div>
@@ -734,7 +733,7 @@ export default function AddTrainerDetailsPage() {
                 className={inputClass}
                 value={formData.firstName}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/[^A-Za-z]/g, "");
+                  const value = e.target.value.replace(/[^A-Za-z.\s]/g, "");
                   setFormData({ ...formData, firstName: value });
                 }}
               />
@@ -754,12 +753,39 @@ export default function AddTrainerDetailsPage() {
                 className={inputClass}
                 value={formData.lastName}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/[^A-Za-z]/g, "");
+                  const value = e.target.value.replace(/[^A-Za-z.\s]/g, "");
                   setFormData({ ...formData, lastName: value });
                 }}
               />
               {errors.lastName && (
                 <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <label className="text-sm font-semibold mb-2">
+                Gender<span className="text-red-500">*</span>
+              </label>
+
+              <select
+                className={inputClass}
+                value={formData.gender}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    gender: e.target.value,
+                  }))
+                }
+              >
+                <option value="">Select Gender</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Others</option>
+              </select>
+
+              {errors.gender && (
+                <span className="text-red-500 text-xs mt-1">
+                  {errors.gender}
+                </span>
               )}
             </div>
 
@@ -772,7 +798,7 @@ export default function AddTrainerDetailsPage() {
                 className={inputClass}
                 value={formData.designation}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/[^A-Za-z\s]/g, "");
+                  const value = e.target.value.replace(/[^A-Za-z.\s]/g, "");
                   setFormData({ ...formData, designation: value });
                 }}
               />
@@ -864,9 +890,8 @@ export default function AddTrainerDetailsPage() {
 
                   <ChevronDown
                     size={18}
-                    className={`ml-2 flex-shrink-0 transition-transform ${
-                      showCategoryDropdown ? "rotate-180" : ""
-                    }`}
+                    className={`ml-2 flex-shrink-0 transition-transform ${showCategoryDropdown ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
 
@@ -915,9 +940,8 @@ export default function AddTrainerDetailsPage() {
                     formData.category &&
                     setShowSubCategoryDropdown(!showSubCategoryDropdown)
                   }
-                  className={`${inputClass} w-full flex items-center justify-between text-left ${
-                    !formData.category && "bg-gray-100 cursor-not-allowed"
-                  }`}
+                  className={`${inputClass} w-full flex items-center justify-between text-left ${!formData.category && "bg-gray-100 cursor-not-allowed"
+                    }`}
                 >
                   <span>
                     {formData.subCategory
@@ -929,9 +953,8 @@ export default function AddTrainerDetailsPage() {
 
                   <ChevronDown
                     size={18}
-                    className={`ml-2 flex-shrink-0 transition-transform ${
-                      showSubCategoryDropdown ? "rotate-180" : ""
-                    }`}
+                    className={`ml-2 flex-shrink-0 transition-transform ${showSubCategoryDropdown ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
 
@@ -1091,11 +1114,10 @@ export default function AddTrainerDetailsPage() {
                   onClick={handleSubmit}
                   disabled={saving}
                   className={`px-10 py-3 rounded-md font-semibold text-white transition
-    ${
-      saving
-        ? "bg-orange-300 cursor-not-allowed"
-        : "bg-orange-500 hover:bg-orange-600"
-    }`}
+    ${saving
+                      ? "bg-orange-300 cursor-not-allowed"
+                      : "bg-orange-500 hover:bg-orange-600"
+                    }`}
                 >
                   {saving ? "Saving..." : "Save"}
                 </button>

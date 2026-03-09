@@ -824,10 +824,11 @@ const MyAccountPage = ({ setActiveMenu }) => {
           <div className="overflow-x-auto rounded-lg border">
             {/* TABLE HEADER */}
             <div
-              className={`grid ${statusFilter === "Left"
-                ? "grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_100px]"
-                : "grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_100px]"
-                } bg-[#E9B489] text-black font-medium px-6 py-3 items-center`}
+   className={`grid ${
+  statusFilter === "Left"
+    ? "grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_100px]"
+    : "grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr_100px]"
+} px-6 py-4 items-start border-t`}
             >
               <p>Name</p>
               <p>Age</p>
@@ -843,20 +844,19 @@ const MyAccountPage = ({ setActiveMenu }) => {
             {filteredStudents.map((student, index) => (
               <div
                 key={student.id}
-                className={`grid ${statusFilter === "Left"
-                  ? "grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_100px]"
-                  : "grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_100px]"
-                  } px-6 py-4 items-center border-t`}
+className={`grid ${
+  statusFilter === "Left"
+    ? "grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_100px]"
+    : "grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr_100px]"
+} px-6 py-4 items-start border-t`}
               >
-                <p className="flex items-center">
+                <p className="flex items-center gap-1">
                   <span className="mr-2">{index + 1}.</span>
                   {student.firstName} {student.lastName}
                 </p>
-                <p className="whitespace-pre-line">
-                  {student.age
-                    ?.replace(" years", "") // 👈 removes years
-                    .replace(" Adults", "\nAdults")
-                    .replace(" Teenage", "\nTeenage")}
+               <p className="whitespace-nowrap">
+
+                {student.age} years
                 </p>
                 <p>{student.belt}</p>
 

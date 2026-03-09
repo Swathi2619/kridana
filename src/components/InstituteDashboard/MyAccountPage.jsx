@@ -1211,10 +1211,7 @@ const MyAccountPage = ({ setActiveMenu }) => {
                   {student.firstName} {student.lastName}
                 </p>
                 <p className="whitespace-pre-line">
-                  {student.age
-                    ?.replace(" years", "") // 👈 removes years
-                    .replace(" Adults", "\nAdults")
-                    .replace(" Teenage", "\nTeenage")}
+                {student.age} years
                 </p>
                 <p>{student.belt}</p>
 

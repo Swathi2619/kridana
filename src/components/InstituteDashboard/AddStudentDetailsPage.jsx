@@ -343,6 +343,7 @@ export default function AddTrainerDetailsPage() {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
+    gender: "",
     dateOfBirth: "",
     age: "",
     joiningDate: "",
@@ -420,11 +421,13 @@ export default function AddTrainerDetailsPage() {
 
       if (!formData.lastName.trim())
         newErrors.lastName = "Last name is required";
+      if (!formData.gender)
+        newErrors.gender = "Gender is required";
 
       if (!formData.dateOfBirth)
         newErrors.dateOfBirth = "Date of Birth is required";
 
-      if (!formData.age) newErrors.age = "Age is required";
+      
 
       if (!formData.joiningDate)
         newErrors.joiningDate = "Joining date is required";
@@ -736,9 +739,8 @@ export default function AddTrainerDetailsPage() {
               {[1, 2].map((s) => (
                 <div
                   key={s}
-                  className={`h-3 flex-1 rounded-full ${
-                    step >= s ? "bg-orange-500" : "bg-gray-300"
-                  }`}
+                  className={`h-3 flex-1 rounded-full ${step >= s ? "bg-orange-500" : "bg-gray-300"
+                    }`}
                 />
               ))}
             </div>
@@ -758,7 +760,7 @@ export default function AddTrainerDetailsPage() {
                 className={inputClass}
                 value={formData.firstName}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/[^A-Za-z]/g, "");
+                  const value = e.target.value.replace(/[^A-Za-z.\s]/g, "");
                   setFormData((prev) => ({ ...prev, firstName: value }));
                 }}
               />
@@ -777,13 +779,40 @@ export default function AddTrainerDetailsPage() {
                 className={inputClass}
                 value={formData.lastName}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/[^A-Za-z]/g, "");
+                  const value = e.target.value.replace(/[^A-Za-z.\s]/g, "");
                   setFormData((prev) => ({ ...prev, lastName: value }));
                 }}
               />
               {errors.lastName && (
                 <span className="text-red-500 text-xs mt-1">
                   {errors.lastName}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <label className="text-sm font-semibold mb-2">
+                Gender<span className="text-red-500">*</span>
+              </label>
+
+              <select
+                className={inputClass}
+                value={formData.gender}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    gender: e.target.value,
+                  }))
+                }
+              >
+                <option value="">Select Gender</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Others</option>
+              </select>
+
+              {errors.gender && (
+                <span className="text-red-500 text-xs mt-1">
+                  {errors.gender}
                 </span>
               )}
             </div>
@@ -799,12 +828,28 @@ export default function AddTrainerDetailsPage() {
                 min="1900-01-01"
                 max={new Date().toISOString().split("T")[0]}
                 value={formData.dateOfBirth}
-                onChange={(e) =>
+                onChange={(e) => {
+                  const dob = e.target.value;
+
+                  const birthDate = new Date(dob);
+                  const today = new Date();
+
+                  let age = today.getFullYear() - birthDate.getFullYear();
+                  const monthDiff = today.getMonth() - birthDate.getMonth();
+
+                  if (
+                    monthDiff < 0 ||
+                    (monthDiff === 0 && today.getDate() < birthDate.getDate())
+                  ) {
+                    age--;
+                  }
+
                   setFormData((prev) => ({
                     ...prev,
-                    dateOfBirth: e.target.value,
-                  }))
-                }
+                    dateOfBirth: dob,
+                    age: age,
+                  }));
+                }}
               />
               {errors.dateOfBirth && (
                 <span className="text-red-500 text-xs mt-1">
@@ -814,24 +859,15 @@ export default function AddTrainerDetailsPage() {
             </div>
 
             <div className="flex flex-col">
-              <label className="text-sm font-semibold mb-2">Age*</label>
-              <select
+              <label className="text-sm font-semibold mb-2">Age</label>
+
+              <input
+                type="text"
                 className={inputClass}
                 value={formData.age}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, age: e.target.value }))
-                }
-              >
-                <option value="">Select Age</option>
-                <option>01 – 10 years Kids</option>
-                <option>11 – 20 years Teenage</option>
-                <option>21 – 45 years Adults</option>
-                <option>45 – 60 years Middle Age</option>
-                <option>61 – 100 years Senior Citizens</option>
-              </select>
-              {errors.age && (
-                <span className="text-red-500 text-xs mt-1">{errors.age}</span>
-              )}
+                readOnly
+                placeholder="Auto calculated from DOB"
+              />
             </div>
 
             {/* Row 3 */}
@@ -876,9 +912,8 @@ export default function AddTrainerDetailsPage() {
 
                   <ChevronDown
                     size={18}
-                    className={`ml-2 flex-shrink-0 transition-transform ${
-                      showCategoryDropdown ? "rotate-180" : ""
-                    }`}
+                    className={`ml-2 flex-shrink-0 transition-transform ${showCategoryDropdown ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
 
@@ -930,9 +965,8 @@ export default function AddTrainerDetailsPage() {
                     formData.category &&
                     setShowSubCategoryDropdown(!showSubCategoryDropdown)
                   }
-                  className={`${inputClass} w-full flex items-center justify-between text-left ${
-                    !formData.category && "bg-gray-100 cursor-not-allowed"
-                  }`}
+                  className={`${inputClass} w-full flex items-center justify-between text-left ${!formData.category && "bg-gray-100 cursor-not-allowed"
+                    }`}
                 >
                   <span>
                     {formData.subCategory
@@ -944,9 +978,8 @@ export default function AddTrainerDetailsPage() {
 
                   <ChevronDown
                     size={18}
-                    className={`ml-2 flex-shrink-0 transition-transform ${
-                      showSubCategoryDropdown ? "rotate-180" : ""
-                    }`}
+                    className={`ml-2 flex-shrink-0 transition-transform ${showSubCategoryDropdown ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
                 {showSubCategoryDropdown && (
@@ -1060,15 +1093,14 @@ export default function AddTrainerDetailsPage() {
                   <span>
                     {formData.timings
                       ? timeSlots.find((t) => t.value === formData.timings)
-                          ?.label
+                        ?.label
                       : "Select Time"}
                   </span>
 
                   <ChevronDown
                     size={18}
-                    className={`ml-2 flex-shrink-0 transition-transform ${
-                      showTimeDropdown ? "rotate-180" : ""
-                    }`}
+                    className={`ml-2 flex-shrink-0 transition-transform ${showTimeDropdown ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
 
