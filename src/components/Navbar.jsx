@@ -255,6 +255,9 @@ const Navbar = () => {
             <NavLink to="/reels" className="hover:text-white transition">
               Reels
             </NavLink>
+            <NavLink to="/help-center" className="hover:text-white transition">
+  Help Center
+</NavLink>
 
             {/* USER ACTIONS (profile + new dropdown side by side) */}
             {/* PROFILE + ARROW DROPDOWN */}
@@ -351,6 +354,13 @@ const Navbar = () => {
           >
             Home
           </NavLink>
+          <NavLink
+  to="/help-center"
+  onClick={() => setIsOpen(false)}
+  className="block font-medium hover:text-orange-600"
+>
+  Help Center
+</NavLink>
 
           <NavLink
             to="/viewTrainers"

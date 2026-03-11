@@ -69,6 +69,8 @@ import PaymentAndRefundPolicy from "./pages/PaymentAndRefundPolicy";
 import ChatBox from "./pages/ChatBox.jsx";
 import PaymentSuccess from "./components/PaymentSuccess.jsx";
 import PaymentFailed from "./components/PaymentFailed.jsx";
+import Feedback from "./pages/Feedback";
+import HelpCenter from "./pages/HelpCenter.jsx";
 function App() {
   const location = useLocation();
 
@@ -105,6 +107,8 @@ function App() {
               <Route path="/trainer-signup" element={<TrainerSignup />} />
               <Route path="/institute-signup" element={<InstituteSignup />} />
               <Route path="/chat/:chatId" element={<ChatBox />} />
+              <Route path="/feedback" element={<Feedback />} />
+              <Route path="/help-center" element={<HelpCenter />} />
 
               {/* LANDING */}
               <Route path="/RoleSelection" element={<RoleSelection />} />

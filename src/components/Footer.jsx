@@ -49,20 +49,20 @@ const Footer = ({ darkMode }) => {
             </h3>
 
             <Link
-              
-              
-              className="hover:text-[#DB6A2E] text-[#5D3A09]"
-            >
-              Visit Help Center
-            </Link>
+  to="/help-center"
+  onClick={scrollToTop}
+  className="hover:text-[#DB6A2E] text-[#5D3A09]"
+>
+  Visit Help Center
+</Link>
 
-            <Link
-             
-              
-              className="hover:text-[#DB6A2E] text-[#5D3A09]"
-            >
-              Share Feedback
-            </Link>
+<Link
+  to="/feedback"
+  onClick={scrollToTop}
+  className="hover:text-[#DB6A2E] text-[#5D3A09]"
+>
+  Share Feedback
+</Link>
           </div>
 
           {/* CONNECT WITH US (RIGHT) */}
